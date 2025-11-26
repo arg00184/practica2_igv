@@ -58,11 +58,19 @@ void igvInterfaz::cambiarModoInteraccion() {
         escena.setParteSeleccionada(-1);
         escena.activarModoSeleccion(false);
         arrastrando = false;
+        if (camara.getMovimientoActivo()) {
+            camara.desactivarMovimiento();
+            printf("Modo camara desactivado para permitir las flechas en transformaciones\n");
+        }
     } else {
         printf("Modo seleccion activado: elige partes con 1-4 o clic y usa flechas\n");
         modoSeleccion = true;
         escena.activarModoSeleccion(true);
         arrastrando = false;
+        if (camara.getMovimientoActivo()) {
+            camara.desactivarMovimiento();
+            printf("Modo camara desactivado: ahora las flechas actuan sobre la seleccion\n");
+        }
     }
 }
 
@@ -298,18 +306,30 @@ void igvInterfaz::keyboardFunc(unsigned char key, int x, int y) {
         case '1':
             if (!_instancia->modoTransformacionGlobal) {
                 _instancia->escena.setParteSeleccionada(0);
+                if (_instancia->camara.getMovimientoActivo()) {
+                    _instancia->camara.desactivarMovimiento();
+                    printf("Modo camara desactivado: flechas reasignadas a la parte elegida\n");
+                }
                 printf("Base seleccionada - Usa las flechas para rotar\n");
             }
             break;
         case '2':
             if (!_instancia->modoTransformacionGlobal) {
                 _instancia->escena.setParteSeleccionada(1);
+                if (_instancia->camara.getMovimientoActivo()) {
+                    _instancia->camara.desactivarMovimiento();
+                    printf("Modo camara desactivado: flechas reasignadas a la parte elegida\n");
+                }
                 printf("Brazo 1 seleccionado - Usa las flechas para rotar\n");
             }
             break;
         case '3':
             if (!_instancia->modoTransformacionGlobal) {
                 _instancia->escena.setParteSeleccionada(2);
+                if (_instancia->camara.getMovimientoActivo()) {
+                    _instancia->camara.desactivarMovimiento();
+                    printf("Modo camara desactivado: flechas reasignadas a la parte elegida\n");
+                }
                 printf("Brazo 2 seleccionado - Izq/Der giran lateralmente, Arr/Ab inclinan\n");
             }
             break;
@@ -382,6 +402,11 @@ void igvInterfaz::mouseFunc(int button, int state, int x, int y) {
         if (_instancia->modoTransformacionGlobal) {
             printf("El modo global esta activo. Pulsa M para volver a seleccionar partes.\n");
             return;
+        }
+
+        if (_instancia->camara.getMovimientoActivo()) {
+            _instancia->camara.desactivarMovimiento();
+            printf("Modo camara desactivado: flechas dedicadas a la parte seleccionada\n");
         }
 
         _instancia->escena.seleccionarParte(x, y, _instancia->alto_ventana);

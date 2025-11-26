@@ -63,6 +63,8 @@ public:
 
     void activarMovimiento();
 
+    void desactivarMovimiento();
+
     bool getMovimientoActivo() const;
 
     tipoCamara getTipo() const;

@@ -89,6 +89,10 @@ void igvCamara::activarMovimiento() {
     modoMovimientoCamara = !modoMovimientoCamara;
 }
 
+void igvCamara::desactivarMovimiento() {
+    modoMovimientoCamara = false;
+}
+
 bool igvCamara::getMovimientoActivo() const {
     return modoMovimientoCamara;
 }
