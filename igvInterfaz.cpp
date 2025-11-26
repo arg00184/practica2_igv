@@ -215,6 +215,9 @@ void igvInterfaz::keyboardFunc(unsigned char key, int x, int y) {
                 printf("Pantalla seleccionada - Izq/Der giran la pantalla, Arr/Ab inclinan\n");
             }
             break;
+        // case '4':
+        //     _instancia->cambiaModoMultiViewPort();
+        //     break;
         case 'h':
         case 'H':
             _instancia->escena.cambiarModoSombreado();
@@ -351,6 +354,7 @@ void igvInterfaz::specialFunc(int key, int x, int y) {
             } else if (_instancia->modoTransformacionGlobal) {
                 _instancia->escena.trasladarX(0.1f);
             } else {
+                _instancia->camara.orbita(-5.0);
                 _instancia->aplicarIncrementoSeleccionadoHorizontal(-5.0f);
             }
             break;
@@ -360,6 +364,7 @@ void igvInterfaz::specialFunc(int key, int x, int y) {
             } else if (_instancia->modoTransformacionGlobal) {
                 _instancia->escena.trasladarX(-0.1f);
             } else {
+                _instancia->camara.orbita(5.0);
                 _instancia->aplicarIncrementoSeleccionadoHorizontal(5.0f);
             }
             break;
@@ -369,6 +374,7 @@ void igvInterfaz::specialFunc(int key, int x, int y) {
             } else if (_instancia->modoTransformacionGlobal) {
                 _instancia->escena.trasladarZ(0.1f);
             } else {
+                _instancia->camara.cabeceo(5.0);
                 _instancia->aplicarIncrementoSeleccionadoVertical(5.0f);
             }
             break;
@@ -378,6 +384,7 @@ void igvInterfaz::specialFunc(int key, int x, int y) {
             } else if (_instancia->modoTransformacionGlobal) {
                 _instancia->escena.trasladarZ(-0.1f);
             } else {
+                _instancia->camara.cabeceo(-5.0);
                 _instancia->aplicarIncrementoSeleccionadoVertical(-5.0f);
             }
             break;
