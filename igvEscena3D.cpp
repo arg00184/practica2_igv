@@ -4,6 +4,7 @@
 
 igvEscena3D::igvEscena3D() {
     ejes = false;
+    mallaCargada = malla.cargarOBJ("airplane_triangles.obj");
 }
 
 igvEscena3D::~igvEscena3D() {
@@ -40,6 +41,16 @@ void igvEscena3D::visualizar() {
         pintar_ejes();
     }
 
+    if (mallaCargada) {
+        GLfloat color_malla[] = {0.6f, 0.6f, 0.8f, 1.0f};
+        glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color_malla);
+        glPushMatrix();
+        glTranslatef(-1.5f, 0.0f, -1.0f);
+        glScalef(0.5f, 0.5f, 0.5f);
+        malla.visualizar();
+        glPopMatrix();
+    }
+
     modelo.visualizar();
 
     glPopMatrix();
@@ -55,10 +66,16 @@ void igvEscena3D::set_ejes(bool _ejes) {
 
 void igvEscena3D::cambiarModoSombreado() {
     modelo.cambiarModoSombreado();
+    if (mallaCargada) {
+        malla.cambiarvis();
+    }
 }
 
 void igvEscena3D::cambiarUsoNormales() {
     modelo.cambiarUsoNormales();
+    if (mallaCargada) {
+        malla.cambiarnormales();
+    }
 }
 
 void igvEscena3D::rotarBaseLampara(float incremento) {
