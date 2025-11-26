@@ -12,6 +12,7 @@
 #endif   // defined(__APPLE__) && defined(__MACH__)
 
 #include <string>
+#include <vector>
 
 class igvMallaTriangulos {
 protected:
@@ -21,8 +22,9 @@ protected:
 
     long int num_triangulos = 0;
     unsigned int *triangulos = nullptr;
-    bool usarnormales;
-    bool gouraud;
+    bool usarnormales = true;
+    bool gouraud = true;
+    bool normales_calculadas = false;
     void calcularNormalesVertices();
 
 public:
@@ -31,7 +33,11 @@ public:
     igvMallaTriangulos(long int _num_vertices, float *_vertices
                        , long int _num_triangulos, unsigned int *_triangulos);
 
+    explicit igvMallaTriangulos(const std::string &rutaOBJ);
+
     ~igvMallaTriangulos();
+
+    bool cargarOBJ(const std::string &rutaOBJ);
 
     void visualizar();
 
