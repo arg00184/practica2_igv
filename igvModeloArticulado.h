@@ -37,6 +37,9 @@ public:
     // Método principal de visualización
     void visualizar();
 
+    // Visualización simplificada por colores para el modo de selección
+    void visualizarSeleccion();
+
     // Métodos para modificar grados de libertad
     void rotarBase(float incremento);
     void rotarBrazoDerecho(float incremento);
