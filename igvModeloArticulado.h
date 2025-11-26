@@ -1,5 +1,5 @@
-#ifndef __IGV_MODELO_ARTICULADO
-#define __IGV_MODELO_ARTICULADO
+#ifndef __IGV_MODELO_ARTICULADO_H
+#define __IGV_MODELO_ARTICULADO_H
 
 #if defined(__APPLE__) && defined(__MACH__)
 #include <GLUT/glut.h>
@@ -9,99 +9,47 @@
 #include <GL/glut.h>
 #endif
 
-#include <vector>
-#include "igvMallaTriangulos.h"
-
 class igvModeloArticulado {
 private:
-    igvMallaTriangulos* cilindro;
-    igvMallaTriangulos* esfera;
-    igvMallaTriangulos* disco;
-    igvMallaTriangulos* cono;
+    // Ángulos de las articulaciones (grados de libertad)
+    float anguloBase;           // Rotación de la base (eje Y)
+    float anguloBrazoDerecho;   // Flexión del brazo derecho lateral
+    float anguloBrazoIzquierdo; // Flexión del brazo izquierdo lateral
+    float anguloBrazo1;         // Flexión del primer brazo principal
+    float anguloBrazo2;         // Flexión del segundo brazo principal
+    float anguloPantalla;       // Inclinación de la pantalla
 
-    float anguloBase;
-    float anguloBrazo1;
-    float anguloBrazo2;
-    float anguloPantalla;
+    // Modo de visualización
+    bool sombreado_suave;
+    bool usar_normales;
 
-    struct Dimensiones {
-        // Base rectangular
-        float anchoBase;
-        float largoBase;
-        float alturaBase;
-
-        // Brazo inferior (más grueso y corto)
-        float longitudBrazo1;
-        float radioBrazo1;
-        float radioBrazo1Prox;
-        float radioBrazo1Dist;
-
-        // Articulaciones
-        float radioArticulacion1;
-        float radioArticulacion2;
-
-        // Refuerzos dobles de los brazos
-        float separacionBarras;
-        float radioBarraSecundaria1;
-        float radioBarraSecundaria2;
-        float radioRefuerzoHorizontal;
-
-        // Brazo superior (más delgado y largo)
-        float longitudBrazo2;
-        float radioBrazo2;
-        float radioBrazo2Prox;
-        float radioBrazo2Dist;
-
-        // Cabeza/pantalla cónica
-        float radioBasePantalla;
-        float radioTopePantalla;
-        float alturaPantalla;
-        float grosorPantalla;
-        float radioBombilla;
-        float alturaBombilla;
-
-        // Cuello de la pantalla
-        float longitudCuello;
-        float radioCuello;
-    } dim;
-
+    // Métodos privados para dibujar cada parte
     void dibujarBase();
-    void dibujarBrazo1();
-    void dibujarArticulacion1();
-    void dibujarBrazo2();
-    void dibujarArticulacion2();
-    void dibujarCuelloPantalla();
+    void dibujarArticulacion();
+    void dibujarBrazoLateral(float longitud, float radio);
+    void dibujarBrazoPrincipal(float longitud, float radio);
     void dibujarPantalla();
-
-    void crearPrimitivas();
 
 public:
     igvModeloArticulado();
     ~igvModeloArticulado();
 
+    // Método principal de visualización
     void visualizar();
-    void cambiarModoSombreado();
-    void cambiarUsoNormales();
 
+    // Métodos para modificar grados de libertad
     void rotarBase(float incremento);
+    void rotarBrazoDerecho(float incremento);
+    void rotarBrazoIzquierdo(float incremento);
     void rotarBrazo1(float incremento);
     void rotarBrazo2(float incremento);
     void rotarPantalla(float incremento);
 
-    float getAnguloBase() const { return anguloBase; }
-    float getAnguloBrazo1() const { return anguloBrazo1; }
-    float getAnguloBrazo2() const { return anguloBrazo2; }
-    float getAnguloPantalla() const { return anguloPantalla; }
-
-    void setAnguloBase(float angulo) { anguloBase = angulo; }
-    void setAnguloBrazo1(float angulo) { anguloBrazo1 = angulo; }
-    void setAnguloBrazo2(float angulo) { anguloBrazo2 = angulo; }
-    void setAnguloPantalla(float angulo) { anguloPantalla = angulo; }
-
     void resetearPose();
 
-    void visualizarConColoresSeleccion();
+    // Métodos para cambiar visualización
+    void cambiarModoSombreado();
+    void cambiarUsoNormales();
 };
 
-#endif // __IGV_MODELO_ARTICULADO
-
+#endif

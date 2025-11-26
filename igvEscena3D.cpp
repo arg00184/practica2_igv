@@ -85,8 +85,8 @@ void igvEscena3D::visualizarModoSeleccion() {
     glDisable(GL_LIGHTING);
     glDisable(GL_LIGHT0);
     glPushMatrix();
-    modelo.visualizarConColoresSeleccion();
-    glPopMatrix();
+    //modelo.visualizarConColoresSeleccion();
+    // glPopMatrix();
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 }
