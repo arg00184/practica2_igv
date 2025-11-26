@@ -42,6 +42,20 @@ public:
 
     void resetearPoseLampara();
 
+    void trasladarX(float incremento);
+
+    void trasladarY(float incremento);
+
+    void trasladarZ(float incremento);
+
+    void rotarEscenaX(float incremento);
+
+    void rotarEscenaY(float incremento);
+
+    void rotarEscenaZ(float incremento);
+
+    void escalarEscena(float factor);
+
     void activarModoSeleccion(bool activo) { modoSeleccion = activo; }
     bool getModoSeleccion() const { return modoSeleccion; }
     int getParteSeleccionada() const { return parteSeleccionada; }
@@ -56,6 +70,13 @@ private:
     bool mallaCargada = false;
     bool modoSeleccion = false;
     int parteSeleccionada = -1; // -1: ninguna, 0: base, 1: brazo1, 2: brazo2, 3: pantalla
+    float traslacionX = 0.0f;
+    float traslacionY = 0.0f;
+    float traslacionZ = 0.0f;
+    float rotacionX = 0.0f;
+    float rotacionY = 0.0f;
+    float rotacionZ = 0.0f;
+    float escala = 1.0f;
 
     void visualizarModoSeleccion();
 
