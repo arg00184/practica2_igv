@@ -340,6 +340,13 @@ void igvInterfaz::keyboardFunc(unsigned char key, int x, int y) {
 }
 
 void igvInterfaz::specialFunc(int key, int x, int y) {
+    if (!_instancia->modoTransformacionGlobal &&
+        _instancia->escena.getParteSeleccionada() != -1 &&
+        _instancia->camara.getMovimientoActivo()) {
+        _instancia->camara.desactivarMovimiento();
+        printf("Modo camara desactivado: las flechas ahora mueven la parte seleccionada\n");
+    }
+
     switch (key) {
         case GLUT_KEY_LEFT:
             if (_instancia->camara.getMovimientoActivo()) {
