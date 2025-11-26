@@ -206,6 +206,12 @@ void igvModeloArticulado::visualizar() {
         glShadeModel(GL_FLAT);
     }
 
+    if (usar_normales) {
+        glEnable(GL_NORMALIZE);
+    } else {
+        glDisable(GL_NORMALIZE);
+    }
+
     glPushMatrix();
 
     // NIVEL 1: Base completa
@@ -258,6 +264,73 @@ void igvModeloArticulado::visualizar() {
     dibujarPantalla();
 
     glPopMatrix();
+}
+
+/**
+ * Visualiza el modelo con colores sólidos para el buffer de selección
+ */
+void igvModeloArticulado::visualizarSeleccion() {
+    glDisable(GL_LIGHTING);
+    glDisable(GL_NORMALIZE);
+
+    glPushMatrix();
+
+    // NIVEL 1: Base completa
+    glColor3ub(255, 0, 0); // Base en rojo
+    dibujarBase();
+    glTranslatef(0, 0.15, 0);
+
+    // Rotación de la base (Grado de libertad 1)
+    glRotatef(anguloBase, 0, 1, 0);
+
+    // Articulación central
+    dibujarArticulacion();
+
+    // NIVEL 2: Primer brazo principal
+    glRotatef(anguloBrazo1, 1, 0, 0);
+    glColor3ub(0, 255, 0); // Brazo 1 en verde
+    dibujarBrazoPrincipal(1.0, 0.06);
+    glTranslatef(0, 1.0, 0);
+
+    // Segunda articulación
+    dibujarArticulacion();
+
+    // NIVEL 3: Segundo brazo principal (incluye brazos laterales)
+    glRotatef(anguloBrazo2, 1, 0, 0);
+
+    glPushMatrix();
+    glTranslatef(0.0f, 0.4f, 0.0f);
+    glColor3ub(0, 0, 255); // Brazo 2 y laterales en azul
+
+    glPushMatrix();
+    glRotatef(-90.0f, 0, 0, 1);
+    dibujarBrazoLateral(0.35f, 0.035f);
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotatef(90.0f, 0, 0, 1);
+    dibujarBrazoLateral(0.35f, 0.035f);
+    glPopMatrix();
+    glPopMatrix();
+
+    glColor3ub(0, 0, 255); // Continuación del brazo 2
+    dibujarBrazoPrincipal(0.8f, 0.05f);
+    glTranslatef(0, 0.8f, 0);
+
+    // Tercera articulación
+    dibujarArticulacion();
+
+    // NIVEL 4: Pantalla
+    glRotatef(anguloPantalla, 1, 0, 0);
+    glColor3ub(255, 255, 0); // Pantalla en amarillo
+    dibujarPantalla();
+
+    glPopMatrix();
+
+    glEnable(GL_LIGHTING);
+    if (usar_normales) {
+        glEnable(GL_NORMALIZE);
+    }
 }
 
 /**
