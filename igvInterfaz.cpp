@@ -100,25 +100,6 @@ void igvInterfaz::aplicarMovimientoRaton(int dx, int dy) {
     }
 }
 
-void igvInterfaz::aplicarIncrementoSeleccionado(float incremento) {
-    switch (escena.getParteSeleccionada()) {
-        case 0:
-            escena.rotarBaseLampara(incremento);
-            break;
-        case 1:
-            escena.rotarBrazo1Lampara(incremento);
-            break;
-        case 2:
-            escena.rotarBrazo2Lampara(incremento);
-            break;
-        case 3:
-            escena.rotarPantallaLampara(incremento);
-            break;
-        default:
-            break;
-    }
-}
-
 void igvInterfaz::keyboardFunc(unsigned char key, int x, int y) {
     switch (key) {
         case 'e':
@@ -242,24 +223,33 @@ void igvInterfaz::reshapeFunc(int w, int h) {
 }
 
 void igvInterfaz::mouseFunc(int button, int state, int x, int y) {
-    if (_instancia->modoSeleccion && button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+        if (!_instancia->modoSeleccion) {
+            // Activa el modo de selección al primer clic para permitir arrastrar con el ratón
+            _instancia->cambiarModoInteraccion();
+        }
+
+        if (!_instancia->modoSeleccion) {
+            return; // No se pudo activar el modo selección
+        }
+
         _instancia->escena.seleccionarParte(x, y, _instancia->alto_ventana);
         int parte = _instancia->escena.getParteSeleccionada();
         switch(parte) {
             case 0:
-                printf("Base seleccionada - Usa las flechas para rotar\n");
+                printf("Base seleccionada - Arrastra o usa las flechas para rotar\n");
                 _instancia->arrastrando = true;
                 break;
             case 1:
-                printf("Brazo 1 seleccionado - Usa las flechas para rotar\n");
+                printf("Brazo 1 seleccionado - Arrastra o usa las flechas para rotar\n");
                 _instancia->arrastrando = true;
                 break;
             case 2:
-                printf("Brazo 2 seleccionado - Usa las flechas para rotar\n");
+                printf("Brazo 2 seleccionado - Arrastra o usa las flechas para rotar\n");
                 _instancia->arrastrando = true;
                 break;
             case 3:
-                printf("Pantalla seleccionada - Usa las flechas para rotar\n");
+                printf("Pantalla seleccionada - Arrastra o usa las flechas para rotar\n");
                 _instancia->arrastrando = true;
                 break;
             default:
