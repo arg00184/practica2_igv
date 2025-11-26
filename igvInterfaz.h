@@ -61,6 +61,8 @@ public:
 
     bool getModoSeleccion() const { return modoSeleccion; }
 
+    void aplicarIncrementoSeleccionado(float incremento);
+
 
 private:
     int ancho_ventana = 0;

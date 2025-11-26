@@ -48,11 +48,30 @@ void igvInterfaz::cambiarModoInteraccion() {
     modoSeleccion = !modoSeleccion;
 
     if (modoSeleccion) {
-        printf("Modo selección activado: Haz clic en una parte de la lámpara para seleccionarla\n");
-        printf("Luego usa las teclas Q/A (brazo1), W/S (brazo2), Z/X (pantalla), 1/2 (base)\n");
+        printf("Modo selección activado: Usa las teclas 1-4 o haz clic para elegir parte\n");
+        printf("Luego controla el movimiento con las flechas (izq/der/arriba/abajo)\n");
     } else {
         printf("Modo teclado activado: Las teclas afectan directamente a todas las partes\n");
         _instancia->escena.activarModoSeleccion(false);
+    }
+}
+
+void igvInterfaz::aplicarIncrementoSeleccionado(float incremento) {
+    switch (escena.getParteSeleccionada()) {
+        case 0:
+            escena.rotarBaseLampara(incremento);
+            break;
+        case 1:
+            escena.rotarBrazo1Lampara(incremento);
+            break;
+        case 2:
+            escena.rotarBrazo2Lampara(incremento);
+            break;
+        case 3:
+            escena.rotarPantallaLampara(incremento);
+            break;
+        default:
+            break;
     }
 }
 
@@ -115,82 +134,20 @@ void igvInterfaz::keyboardFunc(unsigned char key, int x, int y) {
             }
             break;
         case '1':
-            if (_instancia->modoSeleccion) {
-                if (_instancia->escena.getParteSeleccionada() == 0) {
-                    _instancia->escena.rotarBaseLampara(-5.0f);
-                }
-            } else {
-                _instancia->escena.rotarBaseLampara(-5.0f);
-            }
+            _instancia->escena.setParteSeleccionada(0);
+            printf("Base seleccionada - Usa las flechas para rotar\n");
             break;
         case '2':
-            if (_instancia->modoSeleccion) {
-                if (_instancia->escena.getParteSeleccionada() == 0) {
-                    _instancia->escena.rotarBaseLampara(5.0f);
-                }
-            } else {
-                _instancia->escena.rotarBaseLampara(5.0f);
-            }
+            _instancia->escena.setParteSeleccionada(1);
+            printf("Brazo 1 seleccionado - Usa las flechas para rotar\n");
             break;
-        case 'q':
-        case 'Q':
-            if (_instancia->modoSeleccion) {
-                if (_instancia->escena.getParteSeleccionada() == 1) {
-                    _instancia->escena.rotarBrazo1Lampara(5.0f);
-                }
-            } else {
-                _instancia->escena.rotarBrazo1Lampara(5.0f);
-            }
+        case '3':
+            _instancia->escena.setParteSeleccionada(2);
+            printf("Brazo 2 seleccionado - Usa las flechas para rotar\n");
             break;
-        case 'a':
-        case 'A':
-            if (_instancia->modoSeleccion) {
-                if (_instancia->escena.getParteSeleccionada() == 1) {
-                    _instancia->escena.rotarBrazo1Lampara(-5.0f);
-                }
-            } else {
-                _instancia->escena.rotarBrazo1Lampara(-5.0f);
-            }
-            break;
-        case 'w':
-        case 'W':
-            if (_instancia->modoSeleccion) {
-                if (_instancia->escena.getParteSeleccionada() == 2) {
-                    _instancia->escena.rotarBrazo2Lampara(5.0f);
-                }
-            } else {
-                _instancia->escena.rotarBrazo2Lampara(5.0f);
-            }
-            break;
-        case 's':
-        case 'S':
-            if (_instancia->modoSeleccion) {
-                if (_instancia->escena.getParteSeleccionada() == 2) {
-                    _instancia->escena.rotarBrazo2Lampara(-5.0f);
-                }
-            } else {
-                _instancia->escena.rotarBrazo2Lampara(-5.0f);
-            }
-            break;
-        case 'z':
-        case 'Z':
-            if (_instancia->modoSeleccion) {
-                if (_instancia->escena.getParteSeleccionada() == 3) {
-                    _instancia->escena.rotarPantallaLampara(5.0f);
-                }
-            } else {
-                _instancia->escena.rotarPantallaLampara(5.0f);
-            }
-            break;
-        case 'x':
-        case 'X':
-            if (_instancia->modoSeleccion) {
-                if (_instancia->escena.getParteSeleccionada() == 3) {
-                    _instancia->escena.rotarPantallaLampara(-5.0f);
-                }
-            } else {
-                _instancia->escena.rotarPantallaLampara(-5.0f);
-            }
+        case '4':
+            _instancia->escena.setParteSeleccionada(3);
+            printf("Pantalla seleccionada - Usa las flechas para rotar\n");
             break;
         case 27:
             exit(1);
@@ -201,16 +158,32 @@ void igvInterfaz::keyboardFunc(unsigned char key, int x, int y) {
 void igvInterfaz::specialFunc(int key, int x, int y) {
     switch (key) {
         case GLUT_KEY_LEFT:
-            _instancia->camara.orbita(-5.0);
+            if (_instancia->escena.getParteSeleccionada() == -1) {
+                _instancia->camara.orbita(-5.0);
+            } else {
+                _instancia->aplicarIncrementoSeleccionado(-5.0f);
+            }
             break;
         case GLUT_KEY_RIGHT:
-            _instancia->camara.orbita(5.0);
+            if (_instancia->escena.getParteSeleccionada() == -1) {
+                _instancia->camara.orbita(5.0);
+            } else {
+                _instancia->aplicarIncrementoSeleccionado(5.0f);
+            }
             break;
         case GLUT_KEY_UP:
-            _instancia->camara.cabeceo(5.0);
+            if (_instancia->escena.getParteSeleccionada() == -1) {
+                _instancia->camara.cabeceo(5.0);
+            } else {
+                _instancia->aplicarIncrementoSeleccionado(5.0f);
+            }
             break;
         case GLUT_KEY_DOWN:
-            _instancia->camara.cabeceo(-5.0);
+            if (_instancia->escena.getParteSeleccionada() == -1) {
+                _instancia->camara.cabeceo(-5.0);
+            } else {
+                _instancia->aplicarIncrementoSeleccionado(-5.0f);
+            }
             break;
     }
 
@@ -230,16 +203,16 @@ void igvInterfaz::mouseFunc(int button, int state, int x, int y) {
         int parte = _instancia->escena.getParteSeleccionada();
         switch(parte) {
             case 0:
-                printf("Base seleccionada - Usa teclas 1/2 para rotar\n");
+                printf("Base seleccionada - Usa las flechas para rotar\n");
                 break;
             case 1:
-                printf("Brazo 1 seleccionado - Usa teclas Q/A para rotar\n");
+                printf("Brazo 1 seleccionado - Usa las flechas para rotar\n");
                 break;
             case 2:
-                printf("Brazo 2 seleccionado - Usa teclas W/S para rotar\n");
+                printf("Brazo 2 seleccionado - Usa las flechas para rotar\n");
                 break;
             case 3:
-                printf("Pantalla seleccionada - Usa teclas Z/X para rotar\n");
+                printf("Pantalla seleccionada - Usa las flechas para rotar\n");
                 break;
             default:
                 printf("No se selecciono ninguna parte - Haz clic en la lámpara\n");

@@ -41,6 +41,7 @@ public:
     void activarModoSeleccion(bool activo) { modoSeleccion = activo; }
     bool getModoSeleccion() const { return modoSeleccion; }
     int getParteSeleccionada() const { return parteSeleccionada; }
+    void setParteSeleccionada(int parte) { parteSeleccionada = parte; }
 
     void seleccionarParte(int x, int y, int alto_ventana);
 
