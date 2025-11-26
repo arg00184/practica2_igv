@@ -173,11 +173,15 @@ void igvInterfaz::keyboardFunc(unsigned char key, int x, int y) {
         case '+':
             if (_instancia->camara.getMovimientoActivo()) {
                 _instancia->camara.zoom(10.0);
+            } else {
+                printf("Activa el modo camara con C para usar el zoom\n");
             }
             break;
         case '-':
             if (_instancia->camara.getMovimientoActivo()) {
                 _instancia->camara.zoom(-10.0);
+            } else {
+                printf("Activa el modo camara con C para usar el zoom\n");
             }
             break;
         case 'p':
