@@ -340,51 +340,50 @@ void igvInterfaz::keyboardFunc(unsigned char key, int x, int y) {
 }
 
 void igvInterfaz::specialFunc(int key, int x, int y) {
-    if (!_instancia->modoTransformacionGlobal &&
-        _instancia->escena.getParteSeleccionada() != -1 &&
-        _instancia->camara.getMovimientoActivo()) {
+    bool camaraActiva = _instancia->camara.getMovimientoActivo();
+    bool modoGlobal = _instancia->modoTransformacionGlobal;
+    bool hayParteSeleccionada = _instancia->escena.getParteSeleccionada() != -1;
+
+    if (!modoGlobal && hayParteSeleccionada && camaraActiva) {
         _instancia->camara.desactivarMovimiento();
+        camaraActiva = false;
         printf("Modo camara desactivado: las flechas ahora mueven la parte seleccionada\n");
     }
 
     switch (key) {
         case GLUT_KEY_LEFT:
-            if (_instancia->camara.getMovimientoActivo()) {
+            if (camaraActiva) {
                 _instancia->camara.orbita(-5.0);
-            } else if (_instancia->modoTransformacionGlobal) {
+            } else if (modoGlobal) {
                 _instancia->escena.trasladarX(0.1f);
-            } else {
-                _instancia->camara.orbita(-5.0);
+            } else if (hayParteSeleccionada) {
                 _instancia->aplicarIncrementoSeleccionadoHorizontal(-5.0f);
             }
             break;
         case GLUT_KEY_RIGHT:
-            if (_instancia->camara.getMovimientoActivo()) {
+            if (camaraActiva) {
                 _instancia->camara.orbita(5.0);
-            } else if (_instancia->modoTransformacionGlobal) {
+            } else if (modoGlobal) {
                 _instancia->escena.trasladarX(-0.1f);
-            } else {
-                _instancia->camara.orbita(5.0);
+            } else if (hayParteSeleccionada) {
                 _instancia->aplicarIncrementoSeleccionadoHorizontal(5.0f);
             }
             break;
         case GLUT_KEY_UP:
-            if (_instancia->camara.getMovimientoActivo()) {
+            if (camaraActiva) {
                 _instancia->camara.cabeceo(5.0);
-            } else if (_instancia->modoTransformacionGlobal) {
+            } else if (modoGlobal) {
                 _instancia->escena.trasladarZ(0.1f);
-            } else {
-                _instancia->camara.cabeceo(5.0);
+            } else if (hayParteSeleccionada) {
                 _instancia->aplicarIncrementoSeleccionadoVertical(5.0f);
             }
             break;
         case GLUT_KEY_DOWN:
-            if (_instancia->camara.getMovimientoActivo()) {
+            if (camaraActiva) {
                 _instancia->camara.cabeceo(-5.0);
-            } else if (_instancia->modoTransformacionGlobal) {
+            } else if (modoGlobal) {
                 _instancia->escena.trasladarZ(-0.1f);
-            } else {
-                _instancia->camara.cabeceo(-5.0);
+            } else if (hayParteSeleccionada) {
                 _instancia->aplicarIncrementoSeleccionadoVertical(-5.0f);
             }
             break;
