@@ -19,11 +19,15 @@ igvModeloArticulado::igvModeloArticulado() {
 
     dim.longitudBrazo1 = 1.8f;  // Brazo inferior corto y robusto
     dim.radioBrazo1 = 0.12f;
+    dim.radioBrazo1Prox = 0.14f; // Parte cercana al hombro más gruesa
+    dim.radioBrazo1Dist = 0.11f; // Parte cercana al codo ligeramente más delgada
 
     dim.radioArticulacion1 = 0.18f;  // Articulación grande y visible
 
     dim.longitudBrazo2 = 2.2f;  // Brazo superior más largo
     dim.radioBrazo2 = 0.09f;
+    dim.radioBrazo2Prox = 0.1f; // Antebrazo cerca del codo
+    dim.radioBrazo2Dist = 0.085f; // Antebrazo cerca de la muñeca
 
     dim.radioArticulacion2 = 0.15f;
 
@@ -38,6 +42,10 @@ igvModeloArticulado::igvModeloArticulado() {
     dim.radioBasePantalla = 0.7f;   // Base ancha de la pantalla
     dim.radioTopePantalla = 0.35f;  // Tope más estrecho
     dim.alturaPantalla = 0.9f;
+    dim.grosorPantalla = 0.05f; // Espesor de la pantalla para dar profundidad
+
+    dim.radioBombilla = 0.18f;   // Tamaño de la bombilla interior
+    dim.alturaBombilla = 0.25f;  // Posición dentro del cono
 
     crearPrimitivas();
 }
@@ -103,40 +111,32 @@ void igvModeloArticulado::dibujarBrazo1() {
         glTranslatef(0.0f, dim.alturaBase, 0.0f);
         glRotatef(anguloBrazo1, 0.0f, 0.0f, 1.0f);
 
-        // Barra central gruesa
+        // Hombro redondeado
         glPushMatrix();
-            glScalef(dim.radioBrazo1, dim.longitudBrazo1, dim.radioBrazo1);
+            glTranslatef(0.0f, dim.radioBrazo1Prox * 0.6f, 0.0f);
+            glScalef(dim.radioBrazo1Prox, dim.radioBrazo1Prox, dim.radioBrazo1Prox);
+            esfera->visualizar();
+        glPopMatrix();
+
+        // Parte proximal del brazo (más gruesa)
+        glPushMatrix();
+            glTranslatef(0.0f, dim.longitudBrazo1 * 0.25f, 0.0f);
+            glScalef(dim.radioBrazo1Prox, dim.longitudBrazo1 * 0.5f, dim.radioBrazo1Prox);
             cilindro->visualizar();
         glPopMatrix();
 
-        // Barras paralelas de refuerzo
-        for (int i = -1; i <= 1; i += 2) {
-            glPushMatrix();
-                glTranslatef(i * dim.separacionBarras * 0.5f, 0.0f, 0.0f);
-                glScalef(dim.radioBarraSecundaria1, dim.longitudBrazo1, dim.radioBarraSecundaria1);
-                cilindro->visualizar();
-            glPopMatrix();
-        }
-
-        // Travesaños inferiores y superiores
+        // Parte distal del brazo (acercándose al codo)
         glPushMatrix();
-            glTranslatef(0.0f, dim.radioRefuerzoHorizontal * 1.5f, 0.0f);
-            glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
-            glScalef(dim.separacionBarras, dim.radioRefuerzoHorizontal, dim.radioRefuerzoHorizontal);
+            glTranslatef(0.0f, dim.longitudBrazo1 * 0.75f, 0.0f);
+            glScalef(dim.radioBrazo1Dist, dim.longitudBrazo1 * 0.5f, dim.radioBrazo1Dist);
             cilindro->visualizar();
         glPopMatrix();
 
+        // Remate suave en el codo
         glPushMatrix();
-            glTranslatef(0.0f, dim.longitudBrazo1 - dim.radioRefuerzoHorizontal * 1.5f, 0.0f);
-            glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
-            glScalef(dim.separacionBarras, dim.radioRefuerzoHorizontal, dim.radioRefuerzoHorizontal);
-            cilindro->visualizar();
-        glPopMatrix();
-
-        // Disco en la base del brazo
-        glPushMatrix();
-            glScalef(dim.radioBrazo1, 1.0f, dim.radioBrazo1);
-            disco->visualizar();
+            glTranslatef(0.0f, dim.longitudBrazo1, 0.0f);
+            glScalef(dim.radioBrazo1Dist, dim.radioBrazo1Dist, dim.radioBrazo1Dist);
+            esfera->visualizar();
         glPopMatrix();
     glPopMatrix();
 }
@@ -176,40 +176,25 @@ void igvModeloArticulado::dibujarBrazo2() {
         glTranslatef(0.0f, dim.longitudBrazo1, 0.0f);
         glRotatef(anguloBrazo2, 0.0f, 0.0f, 1.0f);
 
-        // Barra central
+        // Parte proximal del antebrazo (cerca del codo)
         glPushMatrix();
-            glScalef(dim.radioBrazo2, dim.longitudBrazo2, dim.radioBrazo2);
+            glTranslatef(0.0f, dim.longitudBrazo2 * 0.25f, 0.0f);
+            glScalef(dim.radioBrazo2Prox, dim.longitudBrazo2 * 0.5f, dim.radioBrazo2Prox);
             cilindro->visualizar();
         glPopMatrix();
 
-        // Barras dobles más delgadas
-        for (int i = -1; i <= 1; i += 2) {
-            glPushMatrix();
-                glTranslatef(i * dim.separacionBarras * 0.5f, 0.0f, 0.0f);
-                glScalef(dim.radioBarraSecundaria2, dim.longitudBrazo2, dim.radioBarraSecundaria2);
-                cilindro->visualizar();
-            glPopMatrix();
-        }
-
-        // Travesaños para atar las barras
+        // Parte distal del antebrazo (cerca de la muñeca)
         glPushMatrix();
-            glTranslatef(0.0f, dim.radioRefuerzoHorizontal * 1.5f, 0.0f);
-            glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
-            glScalef(dim.separacionBarras, dim.radioRefuerzoHorizontal, dim.radioRefuerzoHorizontal);
+            glTranslatef(0.0f, dim.longitudBrazo2 * 0.75f, 0.0f);
+            glScalef(dim.radioBrazo2Dist, dim.longitudBrazo2 * 0.5f, dim.radioBrazo2Dist);
             cilindro->visualizar();
         glPopMatrix();
 
+        // Muñeca esférica
         glPushMatrix();
-            glTranslatef(0.0f, dim.longitudBrazo2 - dim.radioRefuerzoHorizontal * 1.5f, 0.0f);
-            glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
-            glScalef(dim.separacionBarras, dim.radioRefuerzoHorizontal, dim.radioRefuerzoHorizontal);
-            cilindro->visualizar();
-        glPopMatrix();
-
-        // Disco en la base
-        glPushMatrix();
-            glScalef(dim.radioBrazo2, 1.0f, dim.radioBrazo2);
-            disco->visualizar();
+            glTranslatef(0.0f, dim.longitudBrazo2, 0.0f);
+            glScalef(dim.radioBrazo2Dist * 0.9f, dim.radioBrazo2Dist * 0.9f, dim.radioBrazo2Dist * 0.9f);
+            esfera->visualizar();
         glPopMatrix();
     glPopMatrix();
 }
@@ -266,6 +251,11 @@ void igvModeloArticulado::dibujarPantalla() {
     GLfloat specular[] = {0.7f, 0.7f, 0.7f, 1.0f};
     GLfloat shininess[] = {60.0f};
 
+    // Interior más oscuro
+    GLfloat colorInterior[] = {0.55f, 0.55f, 0.58f, 1.0f};
+    GLfloat colorBombilla[] = {1.0f, 0.93f, 0.7f, 1.0f};
+    GLfloat emisivaBombilla[] = {0.6f, 0.55f, 0.4f, 1.0f};
+
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colorPantalla);
     glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
     glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
@@ -291,6 +281,30 @@ void igvModeloArticulado::dibujarPantalla() {
             glTranslatef(0.0f, -dim.alturaPantalla, 0.0f);
             glScalef(dim.radioBasePantalla, 1.0f, dim.radioBasePantalla);
             disco->visualizar();
+        glPopMatrix();
+
+        // Interior de la pantalla para dar profundidad
+        glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colorInterior);
+        glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
+        glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
+        glPushMatrix();
+            glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
+            glScalef(dim.radioBasePantalla - dim.grosorPantalla, dim.alturaPantalla - dim.grosorPantalla, dim.radioBasePantalla - dim.grosorPantalla);
+            cono->visualizar();
+        glPopMatrix();
+
+        // Bombilla dentro de la pantalla
+        glPushMatrix();
+            glTranslatef(0.0f, -dim.alturaBombilla, 0.0f);
+            glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colorBombilla);
+            glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
+            glMaterialfv(GL_FRONT, GL_EMISSION, emisivaBombilla);
+            glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
+            glScalef(dim.radioBombilla, dim.radioBombilla, dim.radioBombilla);
+            esfera->visualizar();
+            // Desactivar emisión para siguientes objetos
+            GLfloat sinEmision[] = {0.0f, 0.0f, 0.0f, 1.0f};
+            glMaterialfv(GL_FRONT, GL_EMISSION, sinEmision);
         glPopMatrix();
     glPopMatrix();
 }
@@ -382,7 +396,13 @@ void igvModeloArticulado::visualizarConColoresSeleccion() {
             glTranslatef(0.0f, dim.alturaBase, 0.0f);
             glRotatef(anguloBrazo1, 0.0f, 0.0f, 1.0f);
             glPushMatrix();
-                glScalef(dim.radioBrazo1, dim.longitudBrazo1, dim.radioBrazo1);
+                glTranslatef(0.0f, dim.radioBrazo1Prox * 0.6f, 0.0f);
+                glScalef(dim.radioBrazo1Prox, dim.radioBrazo1Prox, dim.radioBrazo1Prox);
+                esfera->visualizar();
+            glPopMatrix();
+            glPushMatrix();
+                glTranslatef(0.0f, dim.longitudBrazo1 * 0.25f, 0.0f);
+                glScalef(dim.radioBrazo1Prox, dim.longitudBrazo1 * 0.5f, dim.radioBrazo1Prox);
                 cilindro->visualizar();
             glPopMatrix();
             for (int i = -1; i <= 1; i += 2) {
@@ -405,8 +425,14 @@ void igvModeloArticulado::visualizarConColoresSeleccion() {
                 cilindro->visualizar();
             glPopMatrix();
             glPushMatrix();
-                glScalef(dim.radioBrazo1, 1.0f, dim.radioBrazo1);
-                disco->visualizar();
+                glTranslatef(0.0f, dim.longitudBrazo1 * 0.75f, 0.0f);
+                glScalef(dim.radioBrazo1Dist, dim.longitudBrazo1 * 0.5f, dim.radioBrazo1Dist);
+                cilindro->visualizar();
+            glPopMatrix();
+            glPushMatrix();
+                glTranslatef(0.0f, dim.longitudBrazo1, 0.0f);
+                glScalef(dim.radioBrazo1Dist, dim.radioBrazo1Dist, dim.radioBrazo1Dist);
+                esfera->visualizar();
             glPopMatrix();
         glPopMatrix();
 
@@ -427,7 +453,8 @@ void igvModeloArticulado::visualizarConColoresSeleccion() {
             glTranslatef(0.0f, dim.longitudBrazo1, 0.0f);
             glRotatef(anguloBrazo2, 0.0f, 0.0f, 1.0f);
             glPushMatrix();
-                glScalef(dim.radioBrazo2, dim.longitudBrazo2, dim.radioBrazo2);
+                glTranslatef(0.0f, dim.longitudBrazo2 * 0.25f, 0.0f);
+                glScalef(dim.radioBrazo2Prox, dim.longitudBrazo2 * 0.5f, dim.radioBrazo2Prox);
                 cilindro->visualizar();
             glPopMatrix();
             for (int i = -1; i <= 1; i += 2) {
@@ -450,8 +477,14 @@ void igvModeloArticulado::visualizarConColoresSeleccion() {
                 cilindro->visualizar();
             glPopMatrix();
             glPushMatrix();
-                glScalef(dim.radioBrazo2, 1.0f, dim.radioBrazo2);
-                disco->visualizar();
+                glTranslatef(0.0f, dim.longitudBrazo2 * 0.75f, 0.0f);
+                glScalef(dim.radioBrazo2Dist, dim.longitudBrazo2 * 0.5f, dim.radioBrazo2Dist);
+                cilindro->visualizar();
+            glPopMatrix();
+            glPushMatrix();
+                glTranslatef(0.0f, dim.longitudBrazo2, 0.0f);
+                glScalef(dim.radioBrazo2Dist * 0.9f, dim.radioBrazo2Dist * 0.9f, dim.radioBrazo2Dist * 0.9f);
+                esfera->visualizar();
             glPopMatrix();
         glPopMatrix();
 
@@ -493,6 +526,17 @@ void igvModeloArticulado::visualizarConColoresSeleccion() {
                 glTranslatef(0.0f, -dim.alturaPantalla, 0.0f);
                 glScalef(dim.radioBasePantalla, 1.0f, dim.radioBasePantalla);
                 disco->visualizar();
+            glPopMatrix();
+            // Interior y bombilla
+            glPushMatrix();
+                glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
+                glScalef(dim.radioBasePantalla - dim.grosorPantalla, dim.alturaPantalla - dim.grosorPantalla, dim.radioBasePantalla - dim.grosorPantalla);
+                cono->visualizar();
+            glPopMatrix();
+            glPushMatrix();
+                glTranslatef(0.0f, -dim.alturaBombilla, 0.0f);
+                glScalef(dim.radioBombilla, dim.radioBombilla, dim.radioBombilla);
+                esfera->visualizar();
             glPopMatrix();
         glPopMatrix();
 

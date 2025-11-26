@@ -33,6 +33,8 @@ private:
         // Brazo inferior (más grueso y corto)
         float longitudBrazo1;
         float radioBrazo1;
+        float radioBrazo1Prox;
+        float radioBrazo1Dist;
 
         // Articulaciones
         float radioArticulacion1;
@@ -47,11 +49,16 @@ private:
         // Brazo superior (más delgado y largo)
         float longitudBrazo2;
         float radioBrazo2;
+        float radioBrazo2Prox;
+        float radioBrazo2Dist;
 
         // Cabeza/pantalla cónica
         float radioBasePantalla;
         float radioTopePantalla;
         float alturaPantalla;
+        float grosorPantalla;
+        float radioBombilla;
+        float alturaBombilla;
 
         // Cuello de la pantalla
         float longitudCuello;
