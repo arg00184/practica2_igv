@@ -4,6 +4,7 @@
 
 igvEscena3D::igvEscena3D() {
     ejes = false;
+    mallaCargada = malla.cargarOBJ("airplane_triangles.obj");
 }
 
 igvEscena3D::~igvEscena3D() {
@@ -40,6 +41,16 @@ void igvEscena3D::visualizar() {
         pintar_ejes();
     }
 
+    if (mallaCargada) {
+        GLfloat color_malla[] = {0.6f, 0.6f, 0.8f, 1.0f};
+        glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color_malla);
+        glPushMatrix();
+        glTranslatef(-1.5f, 0.0f, -1.0f);
+        glScalef(0.5f, 0.5f, 0.5f);
+        malla.visualizar();
+        glPopMatrix();
+    }
+
     modelo.visualizar();
 
     glPopMatrix();
@@ -55,10 +66,16 @@ void igvEscena3D::set_ejes(bool _ejes) {
 
 void igvEscena3D::cambiarModoSombreado() {
     modelo.cambiarModoSombreado();
+    if (mallaCargada) {
+        malla.cambiarvis();
+    }
 }
 
 void igvEscena3D::cambiarUsoNormales() {
     modelo.cambiarUsoNormales();
+    if (mallaCargada) {
+        malla.cambiarnormales();
+    }
 }
 
 void igvEscena3D::rotarBaseLampara(float incremento) {
@@ -73,8 +90,16 @@ void igvEscena3D::rotarBrazo2Lampara(float incremento) {
     modelo.rotarBrazo2(incremento);
 }
 
+void igvEscena3D::rotarBrazo2LateralLampara(float incremento) {
+    modelo.rotarBrazo2Lateral(incremento);
+}
+
 void igvEscena3D::rotarPantallaLampara(float incremento) {
     modelo.rotarPantalla(incremento);
+}
+
+void igvEscena3D::rotarPantallaLateralLampara(float incremento) {
+    modelo.rotarPantallaLateral(incremento);
 }
 
 void igvEscena3D::resetearPoseLampara() {
@@ -82,13 +107,15 @@ void igvEscena3D::resetearPoseLampara() {
 }
 
 void igvEscena3D::visualizarModoSeleccion() {
+    glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     glDisable(GL_LIGHTING);
-    glDisable(GL_LIGHT0);
+    glDisable(GL_DITHER);
+
     glPushMatrix();
-    //modelo.visualizarConColoresSeleccion();
-    // glPopMatrix();
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
+    modelo.visualizarSeleccion();
+    glPopMatrix();
+
+    glPopAttrib();
 }
 
 unsigned char* igvEscena3D::capturarBufferSeleccion(int x, int y) {
