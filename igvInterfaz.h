@@ -81,6 +81,7 @@ private:
     bool orbitaAutomaticaActiva = false;
     int timerAnimacion = 16;
     bool modoSeleccion = false;
+    bool modoTransformacionGlobal = false;
     igvEscena3D escena;
     static igvInterfaz *_instancia;
 
