@@ -405,6 +405,25 @@ void igvModeloArticulado::visualizarConColoresSeleccion() {
                 glScalef(dim.radioBrazo1Prox, dim.longitudBrazo1 * 0.5f, dim.radioBrazo1Prox);
                 cilindro->visualizar();
             glPopMatrix();
+            for (int i = -1; i <= 1; i += 2) {
+                glPushMatrix();
+                    glTranslatef(i * dim.separacionBarras * 0.5f, 0.0f, 0.0f);
+                    glScalef(dim.radioBarraSecundaria1, dim.longitudBrazo1, dim.radioBarraSecundaria1);
+                    cilindro->visualizar();
+                glPopMatrix();
+            }
+            glPushMatrix();
+                glTranslatef(0.0f, dim.radioRefuerzoHorizontal * 1.5f, 0.0f);
+                glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+                glScalef(dim.separacionBarras, dim.radioRefuerzoHorizontal, dim.radioRefuerzoHorizontal);
+                cilindro->visualizar();
+            glPopMatrix();
+            glPushMatrix();
+                glTranslatef(0.0f, dim.longitudBrazo1 - dim.radioRefuerzoHorizontal * 1.5f, 0.0f);
+                glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+                glScalef(dim.separacionBarras, dim.radioRefuerzoHorizontal, dim.radioRefuerzoHorizontal);
+                cilindro->visualizar();
+            glPopMatrix();
             glPushMatrix();
                 glTranslatef(0.0f, dim.longitudBrazo1 * 0.75f, 0.0f);
                 glScalef(dim.radioBrazo1Dist, dim.longitudBrazo1 * 0.5f, dim.radioBrazo1Dist);
@@ -436,6 +455,25 @@ void igvModeloArticulado::visualizarConColoresSeleccion() {
             glPushMatrix();
                 glTranslatef(0.0f, dim.longitudBrazo2 * 0.25f, 0.0f);
                 glScalef(dim.radioBrazo2Prox, dim.longitudBrazo2 * 0.5f, dim.radioBrazo2Prox);
+                cilindro->visualizar();
+            glPopMatrix();
+            for (int i = -1; i <= 1; i += 2) {
+                glPushMatrix();
+                    glTranslatef(i * dim.separacionBarras * 0.5f, 0.0f, 0.0f);
+                    glScalef(dim.radioBarraSecundaria2, dim.longitudBrazo2, dim.radioBarraSecundaria2);
+                    cilindro->visualizar();
+                glPopMatrix();
+            }
+            glPushMatrix();
+                glTranslatef(0.0f, dim.radioRefuerzoHorizontal * 1.5f, 0.0f);
+                glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+                glScalef(dim.separacionBarras, dim.radioRefuerzoHorizontal, dim.radioRefuerzoHorizontal);
+                cilindro->visualizar();
+            glPopMatrix();
+            glPushMatrix();
+                glTranslatef(0.0f, dim.longitudBrazo2 - dim.radioRefuerzoHorizontal * 1.5f, 0.0f);
+                glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+                glScalef(dim.separacionBarras, dim.radioRefuerzoHorizontal, dim.radioRefuerzoHorizontal);
                 cilindro->visualizar();
             glPopMatrix();
             glPushMatrix();
