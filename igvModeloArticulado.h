@@ -38,6 +38,12 @@ private:
         float radioArticulacion1;
         float radioArticulacion2;
 
+        // Refuerzos dobles de los brazos
+        float separacionBarras;
+        float radioBarraSecundaria1;
+        float radioBarraSecundaria2;
+        float radioRefuerzoHorizontal;
+
         // Brazo superior (más delgado y largo)
         float longitudBrazo2;
         float radioBrazo2;
@@ -91,3 +97,4 @@ public:
 };
 
 #endif // __IGV_MODELO_ARTICULADO
+
