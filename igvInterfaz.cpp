@@ -100,6 +100,25 @@ void igvInterfaz::aplicarMovimientoRaton(int dx, int dy) {
     }
 }
 
+void igvInterfaz::aplicarIncrementoSeleccionado(float incremento) {
+    switch (escena.getParteSeleccionada()) {
+        case 0:
+            escena.rotarBaseLampara(incremento);
+            break;
+        case 1:
+            escena.rotarBrazo1Lampara(incremento);
+            break;
+        case 2:
+            escena.rotarBrazo2Lampara(incremento);
+            break;
+        case 3:
+            escena.rotarPantallaLampara(incremento);
+            break;
+        default:
+            break;
+    }
+}
+
 void igvInterfaz::keyboardFunc(unsigned char key, int x, int y) {
     switch (key) {
         case 'e':
