@@ -37,6 +37,7 @@ private:
 
     igvPunto3D V = {0, 1, 0};
     bool modoMovimientoCamara = false;
+    int vistaActual = 0;
 
 public:
     igvCamara() = default;
@@ -75,6 +76,16 @@ public:
     void desplazarAdelante(double incremento);
 
     void aplicarViewport(int viewport_id, int ancho_ventana, int alto_ventana);
+
+    void moverPlanoDelantero(double incremento);
+
+    void moverPlanoTrasero(double incremento);
+
+    void setAspecto(double aspecto);
+
+    void siguienteVista();
+
+    void aplicarVistaActual();
 };
 
 #endif   // __IGVCAMARA
