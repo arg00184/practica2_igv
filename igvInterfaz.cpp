@@ -8,6 +8,8 @@ igvInterfaz::igvInterfaz() {
     camara.set(igvPunto3D(3.5, 4.0, 10.0),
                igvPunto3D(0.0, 0.0, 0.0),
                igvPunto3D(0.0, 1.0, 0.0));
+    modoSeleccion = true;
+    escena.activarModoSeleccion(true);
 }
 
 igvInterfaz &igvInterfaz::getInstancia() {
@@ -47,31 +49,41 @@ void igvInterfaz::inicia_bucle_visualizacion() {
 }
 
 void igvInterfaz::cambiarModoInteraccion() {
-    modoSeleccion = !modoSeleccion;
+    modoTransformacionGlobal = !modoTransformacionGlobal;
 
-    if (modoSeleccion) {
-        printf("Modo selección activado: Usa las teclas 1-4 o haz clic para elegir parte\n");
-        printf("Luego controla el movimiento con las flechas (izq/der/arriba/abajo)\n");
-        _instancia->escena.activarModoSeleccion(true);
+    if (modoTransformacionGlobal) {
+        printf("Modo transformaciones globales activado: mueve toda la escena con las teclas\n");
+        printf("Flechas y U/u para trasladar, X/Y/Z para rotar, S para escalar\n");
+        modoSeleccion = false;
+        escena.setParteSeleccionada(-1);
+        escena.activarModoSeleccion(false);
         arrastrando = false;
+        if (camara.getMovimientoActivo()) {
+            camara.desactivarMovimiento();
+            printf("Modo camara desactivado para permitir las flechas en transformaciones\n");
+        }
     } else {
-        printf("Modo teclado activado: Las teclas afectan directamente a todas las partes\n");
-        _instancia->escena.activarModoSeleccion(false);
+        printf("Modo seleccion activado: elige partes con 1-4 o clic y usa flechas\n");
+        modoSeleccion = true;
+        escena.activarModoSeleccion(true);
         arrastrando = false;
+        if (camara.getMovimientoActivo()) {
+            camara.desactivarMovimiento();
+            printf("Modo camara desactivado: ahora las flechas actuan sobre la seleccion\n");
+        }
     }
 }
 
 void igvInterfaz::mostrarAyudaInicial() const {
     printf("====================== INSTRUCCIONES ======================\n");
-    printf("Movimiento de cámara: flechas (vista libre), +/- zoom, P perspectiva/ortográfica\n");
-    printf("Vista múltiple: tecla 4. Ejes: E. Encender movimiento continuo de cámara: C/F/B\n");
-    printf("Iluminación y normales: H alterna sombreado plano/suave y uso de normales\n");
-    printf("Animaciones: A anima la lámpara, G activa la órbita automática de la cámara\n");
-    printf("Interacción con la lámpara: M cambia entre modo teclado y modo selección\n");
-    printf("Seleccionar partes: teclas 1-4 o clic por color. Reset pose: R\n");
-    printf("Mover partes (modo selección): flechas o arrastrar con botón izquierdo\n");
-    printf("Brazo 2 y pantalla: Izq/Der giro lateral, Arr/Ab inclinación vertical\n");
-    printf("Salir: ESC. \n");
+    printf("M alterna entre modo global y modo de seleccion individual\n");
+    printf("Modo global: flechas/U/u trasladan, X/Y/Z rotan, S escala toda la escena\n");
+    printf("Modo seleccion: pulsa 1-4 o clic y mueve con flechas o arrastrando\n");
+    printf("Camara: C activa control. Flechas orbitan/cabecean, y/Y gira eje propio\n");
+    printf("Camara: f/F plano delantero, b/B plano trasero, +/- zoom, p/P proyeccion\n");
+    printf("Vistas: v/V cambia panoramica/planta/perfil/alzado. 4 viewports en modo camara\n");
+    printf("Ejes: E. Iluminacion y normales: H. Animaciones: A modelo, G orbita camara\n");
+    printf("Reset pose lampara: R. Salir: ESC. \n");
     printf("============================================================\n");
 }
 
@@ -146,22 +158,39 @@ void igvInterfaz::keyboardFunc(unsigned char key, int x, int y) {
         case 'c':
         case 'C':
             _instancia->camara.activarMovimiento();
+            if (_instancia->camara.getMovimientoActivo()) {
+                printf("Modo camara activado. Usa flechas, y/Y, f/F, b/B, +/-\n");
+            } else {
+                printf("Modo camara desactivado\n");
+            }
             break;
         case 'f':
         case 'F':
-            if (_instancia->camara.getMovimientoActivo())
-                _instancia->camara.desplazarAdelante(0.2);
+            if (_instancia->camara.getMovimientoActivo()) {
+                double delta = (key == 'f') ? 0.2 : -0.2;
+                _instancia->camara.moverPlanoDelantero(delta);
+            }
             break;
         case 'b':
         case 'B':
-            if (_instancia->camara.getMovimientoActivo())
-                _instancia->camara.desplazarAdelante(-0.2);
+            if (_instancia->camara.getMovimientoActivo()) {
+                double delta = (key == 'b') ? 0.5 : -0.5;
+                _instancia->camara.moverPlanoTrasero(delta);
+            }
             break;
         case '+':
-            _instancia->camara.zoom(10.0);
+            if (_instancia->camara.getMovimientoActivo()) {
+                _instancia->camara.zoom(10.0);
+            } else {
+                printf("Activa el modo camara con C para usar el zoom\n");
+            }
             break;
         case '-':
-            _instancia->camara.zoom(-10.0);
+            if (_instancia->camara.getMovimientoActivo()) {
+                _instancia->camara.zoom(-10.0);
+            } else {
+                printf("Activa el modo camara con C para usar el zoom\n");
+            }
             break;
         case 'p':
         case 'P':
@@ -169,8 +198,22 @@ void igvInterfaz::keyboardFunc(unsigned char key, int x, int y) {
                 _instancia->camara.set(IGV_PERSPECTIVA);
             else _instancia->camara.set(IGV_PARALELA);
             break;
+        case 'v':
+        case 'V':
+            _instancia->camara.siguienteVista();
+            break;
         case '4':
-            _instancia->cambiaModoMultiViewPort();
+            if (_instancia->camara.getMovimientoActivo()) {
+                _instancia->cambiaModoMultiViewPort();
+                if (_instancia->getModoMultiViewport()) {
+                    printf("Viewports activados: panoramica, planta, perfil y alzado\n");
+                } else {
+                    printf("Viewports desactivados: vuelve a la vista principal\n");
+                }
+            } else if (!_instancia->modoTransformacionGlobal) {
+                _instancia->escena.setParteSeleccionada(3);
+                printf("Pantalla seleccionada - Izq/Der giran la pantalla, Arr/Ab inclinan\n");
+            }
             break;
         case 'h':
         case 'H':
@@ -184,6 +227,60 @@ void igvInterfaz::keyboardFunc(unsigned char key, int x, int y) {
         case 'm':
         case 'M':
             _instancia->cambiarModoInteraccion();
+            break;
+        case 'u':
+            if (_instancia->modoTransformacionGlobal) {
+                _instancia->escena.trasladarY(0.1f);
+            }
+            break;
+        case 'U':
+            if (_instancia->modoTransformacionGlobal) {
+                _instancia->escena.trasladarY(-0.1f);
+            }
+            break;
+        case 'x':
+            if (_instancia->modoTransformacionGlobal) {
+                _instancia->escena.rotarEscenaX(5.0f);
+            }
+            break;
+        case 'X':
+            if (_instancia->modoTransformacionGlobal) {
+                _instancia->escena.rotarEscenaX(-5.0f);
+            }
+            break;
+        case 'y':
+            if (_instancia->camara.getMovimientoActivo()) {
+                _instancia->camara.rotacionEjeY(5.0);
+            } else if (_instancia->modoTransformacionGlobal) {
+                _instancia->escena.rotarEscenaY(5.0f);
+            }
+            break;
+        case 'Y':
+            if (_instancia->camara.getMovimientoActivo()) {
+                _instancia->camara.rotacionEjeY(-5.0);
+            } else if (_instancia->modoTransformacionGlobal) {
+                _instancia->escena.rotarEscenaY(-5.0f);
+            }
+            break;
+        case 'z':
+            if (_instancia->modoTransformacionGlobal) {
+                _instancia->escena.rotarEscenaZ(5.0f);
+            }
+            break;
+        case 'Z':
+            if (_instancia->modoTransformacionGlobal) {
+                _instancia->escena.rotarEscenaZ(-5.0f);
+            }
+            break;
+        case 's':
+            if (_instancia->modoTransformacionGlobal) {
+                _instancia->escena.escalarEscena(0.05f);
+            }
+            break;
+        case 'S':
+            if (_instancia->modoTransformacionGlobal) {
+                _instancia->escena.escalarEscena(-0.05f);
+            }
             break;
         case 'a':
         case 'A':
@@ -204,20 +301,34 @@ void igvInterfaz::keyboardFunc(unsigned char key, int x, int y) {
             }
             break;
         case '1':
-            _instancia->escena.setParteSeleccionada(0);
-            printf("Base seleccionada - Usa las flechas para rotar\n");
+            if (!_instancia->modoTransformacionGlobal) {
+                _instancia->escena.setParteSeleccionada(0);
+                if (_instancia->camara.getMovimientoActivo()) {
+                    _instancia->camara.desactivarMovimiento();
+                    printf("Modo camara desactivado: flechas reasignadas a la parte elegida\n");
+                }
+                printf("Base seleccionada - Usa las flechas para rotar\n");
+            }
             break;
         case '2':
-            _instancia->escena.setParteSeleccionada(1);
-            printf("Brazo 1 seleccionado - Usa las flechas para rotar\n");
+            if (!_instancia->modoTransformacionGlobal) {
+                _instancia->escena.setParteSeleccionada(1);
+                if (_instancia->camara.getMovimientoActivo()) {
+                    _instancia->camara.desactivarMovimiento();
+                    printf("Modo camara desactivado: flechas reasignadas a la parte elegida\n");
+                }
+                printf("Brazo 1 seleccionado - Usa las flechas para rotar\n");
+            }
             break;
         case '3':
-            _instancia->escena.setParteSeleccionada(2);
-            printf("Brazo 2 seleccionado - Izq/Der giran lateralmente, Arr/Ab inclinan\n");
-            break;
-        case '4':
-            _instancia->escena.setParteSeleccionada(3);
-            printf("Pantalla seleccionada - Izq/Der giran la pantalla, Arr/Ab inclinan\n");
+            if (!_instancia->modoTransformacionGlobal) {
+                _instancia->escena.setParteSeleccionada(2);
+                if (_instancia->camara.getMovimientoActivo()) {
+                    _instancia->camara.desactivarMovimiento();
+                    printf("Modo camara desactivado: flechas reasignadas a la parte elegida\n");
+                }
+                printf("Brazo 2 seleccionado - Izq/Der giran lateralmente, Arr/Ab inclinan\n");
+            }
             break;
         case 27:
             exit(1);
@@ -226,32 +337,50 @@ void igvInterfaz::keyboardFunc(unsigned char key, int x, int y) {
 }
 
 void igvInterfaz::specialFunc(int key, int x, int y) {
+    bool camaraActiva = _instancia->camara.getMovimientoActivo();
+    bool modoGlobal = _instancia->modoTransformacionGlobal;
+    bool hayParteSeleccionada = _instancia->escena.getParteSeleccionada() != -1;
+
+    if (!modoGlobal && hayParteSeleccionada && camaraActiva) {
+        _instancia->camara.desactivarMovimiento();
+        camaraActiva = false;
+        printf("Modo camara desactivado: las flechas ahora mueven la parte seleccionada\n");
+    }
+
     switch (key) {
         case GLUT_KEY_LEFT:
-            if (_instancia->escena.getParteSeleccionada() == -1) {
+            if (camaraActiva) {
                 _instancia->camara.orbita(-5.0);
-            } else {
+            } else if (modoGlobal) {
+                _instancia->escena.trasladarX(0.1f);
+            } else if (hayParteSeleccionada) {
                 _instancia->aplicarIncrementoSeleccionadoHorizontal(-5.0f);
             }
             break;
         case GLUT_KEY_RIGHT:
-            if (_instancia->escena.getParteSeleccionada() == -1) {
+            if (camaraActiva) {
                 _instancia->camara.orbita(5.0);
-            } else {
+            } else if (modoGlobal) {
+                _instancia->escena.trasladarX(-0.1f);
+            } else if (hayParteSeleccionada) {
                 _instancia->aplicarIncrementoSeleccionadoHorizontal(5.0f);
             }
             break;
         case GLUT_KEY_UP:
-            if (_instancia->escena.getParteSeleccionada() == -1) {
+            if (camaraActiva) {
                 _instancia->camara.cabeceo(5.0);
-            } else {
+            } else if (modoGlobal) {
+                _instancia->escena.trasladarZ(0.1f);
+            } else if (hayParteSeleccionada) {
                 _instancia->aplicarIncrementoSeleccionadoVertical(5.0f);
             }
             break;
         case GLUT_KEY_DOWN:
-            if (_instancia->escena.getParteSeleccionada() == -1) {
+            if (camaraActiva) {
                 _instancia->camara.cabeceo(-5.0);
-            } else {
+            } else if (modoGlobal) {
+                _instancia->escena.trasladarZ(-0.1f);
+            } else if (hayParteSeleccionada) {
                 _instancia->aplicarIncrementoSeleccionadoVertical(-5.0f);
             }
             break;
@@ -264,18 +393,23 @@ void igvInterfaz::reshapeFunc(int w, int h) {
     glViewport(0, 0, (GLsizei) w, (GLsizei) h);
     _instancia->set_ancho_ventana(w);
     _instancia->set_alto_ventana(h);
+    if (h != 0) {
+        double aspecto = static_cast<double>(w) / static_cast<double>(h);
+        _instancia->camara.setAspecto(aspecto);
+    }
     _instancia->camara.aplicar();
 }
 
 void igvInterfaz::mouseFunc(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-        if (!_instancia->modoSeleccion) {
-            // Activa el modo de selección al primer clic para permitir arrastrar con el ratón
-            _instancia->cambiarModoInteraccion();
+        if (_instancia->modoTransformacionGlobal) {
+            printf("El modo global esta activo. Pulsa M para volver a seleccionar partes.\n");
+            return;
         }
 
-        if (!_instancia->modoSeleccion) {
-            return; // No se pudo activar el modo selección
+        if (_instancia->camara.getMovimientoActivo()) {
+            _instancia->camara.desactivarMovimiento();
+            printf("Modo camara desactivado: flechas dedicadas a la parte seleccionada\n");
         }
 
         _instancia->escena.seleccionarParte(x, y, _instancia->alto_ventana);

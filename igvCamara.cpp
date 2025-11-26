@@ -78,15 +78,19 @@ void igvCamara::zoom(double factor) {
         ywmin *= factor_escala;
         ywmax *= factor_escala;
     } else if (tipo == IGV_PERSPECTIVA) {
-        double factor_escala = 1.0 - (factor / 100.0);
-        angulo *= factor_escala;
-        if (angulo < 10.0) angulo = 10.0;
-        if (angulo > 120.0) angulo = 120.0;
+    double factor_escala = 1.0 - (factor / 100.0);
+    angulo *= factor_escala;
+    if (angulo < 10.0) angulo = 10.0;
+    if (angulo > 120.0) angulo = 120.0;
     }
 }
 
 void igvCamara::activarMovimiento() {
     modoMovimientoCamara = !modoMovimientoCamara;
+}
+
+void igvCamara::desactivarMovimiento() {
+    modoMovimientoCamara = false;
 }
 
 bool igvCamara::getMovimientoActivo() const {
@@ -95,6 +99,31 @@ bool igvCamara::getMovimientoActivo() const {
 
 tipoCamara igvCamara::getTipo() const {
     return tipo;
+}
+
+void igvCamara::moverPlanoDelantero(double incremento) {
+    znear += incremento;
+    if (znear < 0.1) {
+        znear = 0.1;
+    }
+    if (znear >= zfar - 0.5) {
+        znear = zfar - 0.5;
+    }
+}
+
+void igvCamara::moverPlanoTrasero(double incremento) {
+    zfar += incremento;
+    if (zfar <= znear + 0.5) {
+        zfar = znear + 0.5;
+    }
+    if (zfar < 1.0) {
+        zfar = 1.0;
+    }
+}
+
+void igvCamara::setAspecto(double aspecto) {
+    if (aspecto <= 0.0) return;
+    raspecto = aspecto;
 }
 
 void igvCamara::orbita(double incremento) {
@@ -222,4 +251,34 @@ void igvCamara::aplicarViewport(int viewport_id, int ancho_ventana, int alto_ven
     gluLookAt(pos_camara[X], pos_camara[Y], pos_camara[Z],
               punto_ref[X], punto_ref[Y], punto_ref[Z],
               vector_up[X], vector_up[Y], vector_up[Z]);
+}
+
+void igvCamara::siguienteVista() {
+    vistaActual = (vistaActual + 1) % 4;
+    aplicarVistaActual();
+}
+
+void igvCamara::aplicarVistaActual() {
+    switch (vistaActual) {
+        case 0: // Panoramica
+            P0 = igvPunto3D(3.5, 4.0, 10.0);
+            r = igvPunto3D(0.0, 0.0, 0.0);
+            V = igvPunto3D(0.0, 1.0, 0.0);
+            break;
+        case 1: // Planta
+            P0 = igvPunto3D(0.0, 8.0, 0.0);
+            r = igvPunto3D(0.0, 0.0, 0.0);
+            V = igvPunto3D(0.0, 0.0, -1.0);
+            break;
+        case 2: // Perfil
+            P0 = igvPunto3D(8.0, 0.0, 0.0);
+            r = igvPunto3D(0.0, 0.0, 0.0);
+            V = igvPunto3D(0.0, 1.0, 0.0);
+            break;
+        case 3: // Alzado
+            P0 = igvPunto3D(0.0, 0.0, 8.0);
+            r = igvPunto3D(0.0, 0.0, 0.0);
+            V = igvPunto3D(0.0, 1.0, 0.0);
+            break;
+    }
 }
