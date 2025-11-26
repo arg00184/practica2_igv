@@ -215,6 +215,9 @@ void igvInterfaz::keyboardFunc(unsigned char key, int x, int y) {
                 printf("Pantalla seleccionada - Izq/Der giran la pantalla, Arr/Ab inclinan\n");
             }
             break;
+        // case '4':
+        //     _instancia->cambiaModoMultiViewPort();
+        //     break;
         case 'h':
         case 'H':
             _instancia->escena.cambiarModoSombreado();
