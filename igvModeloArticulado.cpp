@@ -27,6 +27,11 @@ igvModeloArticulado::igvModeloArticulado() {
 
     dim.radioArticulacion2 = 0.15f;
 
+    dim.separacionBarras = 0.25f;           // Distancia entre las barras paralelas
+    dim.radioBarraSecundaria1 = 0.08f;      // Grosor de las barras dobles inferiores
+    dim.radioBarraSecundaria2 = 0.065f;     // Grosor de las barras dobles superiores
+    dim.radioRefuerzoHorizontal = 0.06f;    // Grosor de los travesaños horizontales
+
     dim.longitudCuello = 0.3f;
     dim.radioCuello = 0.08f;
 
@@ -98,9 +103,33 @@ void igvModeloArticulado::dibujarBrazo1() {
         glTranslatef(0.0f, dim.alturaBase, 0.0f);
         glRotatef(anguloBrazo1, 0.0f, 0.0f, 1.0f);
 
-        // Cilindro del brazo
+        // Barra central gruesa
         glPushMatrix();
             glScalef(dim.radioBrazo1, dim.longitudBrazo1, dim.radioBrazo1);
+            cilindro->visualizar();
+        glPopMatrix();
+
+        // Barras paralelas de refuerzo
+        for (int i = -1; i <= 1; i += 2) {
+            glPushMatrix();
+                glTranslatef(i * dim.separacionBarras * 0.5f, 0.0f, 0.0f);
+                glScalef(dim.radioBarraSecundaria1, dim.longitudBrazo1, dim.radioBarraSecundaria1);
+                cilindro->visualizar();
+            glPopMatrix();
+        }
+
+        // Travesaños inferiores y superiores
+        glPushMatrix();
+            glTranslatef(0.0f, dim.radioRefuerzoHorizontal * 1.5f, 0.0f);
+            glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+            glScalef(dim.separacionBarras, dim.radioRefuerzoHorizontal, dim.radioRefuerzoHorizontal);
+            cilindro->visualizar();
+        glPopMatrix();
+
+        glPushMatrix();
+            glTranslatef(0.0f, dim.longitudBrazo1 - dim.radioRefuerzoHorizontal * 1.5f, 0.0f);
+            glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+            glScalef(dim.separacionBarras, dim.radioRefuerzoHorizontal, dim.radioRefuerzoHorizontal);
             cilindro->visualizar();
         glPopMatrix();
 
@@ -147,9 +176,33 @@ void igvModeloArticulado::dibujarBrazo2() {
         glTranslatef(0.0f, dim.longitudBrazo1, 0.0f);
         glRotatef(anguloBrazo2, 0.0f, 0.0f, 1.0f);
 
-        // Cilindro del brazo
+        // Barra central
         glPushMatrix();
             glScalef(dim.radioBrazo2, dim.longitudBrazo2, dim.radioBrazo2);
+            cilindro->visualizar();
+        glPopMatrix();
+
+        // Barras dobles más delgadas
+        for (int i = -1; i <= 1; i += 2) {
+            glPushMatrix();
+                glTranslatef(i * dim.separacionBarras * 0.5f, 0.0f, 0.0f);
+                glScalef(dim.radioBarraSecundaria2, dim.longitudBrazo2, dim.radioBarraSecundaria2);
+                cilindro->visualizar();
+            glPopMatrix();
+        }
+
+        // Travesaños para atar las barras
+        glPushMatrix();
+            glTranslatef(0.0f, dim.radioRefuerzoHorizontal * 1.5f, 0.0f);
+            glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+            glScalef(dim.separacionBarras, dim.radioRefuerzoHorizontal, dim.radioRefuerzoHorizontal);
+            cilindro->visualizar();
+        glPopMatrix();
+
+        glPushMatrix();
+            glTranslatef(0.0f, dim.longitudBrazo2 - dim.radioRefuerzoHorizontal * 1.5f, 0.0f);
+            glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+            glScalef(dim.separacionBarras, dim.radioRefuerzoHorizontal, dim.radioRefuerzoHorizontal);
             cilindro->visualizar();
         glPopMatrix();
 
@@ -332,6 +385,25 @@ void igvModeloArticulado::visualizarConColoresSeleccion() {
                 glScalef(dim.radioBrazo1, dim.longitudBrazo1, dim.radioBrazo1);
                 cilindro->visualizar();
             glPopMatrix();
+            for (int i = -1; i <= 1; i += 2) {
+                glPushMatrix();
+                    glTranslatef(i * dim.separacionBarras * 0.5f, 0.0f, 0.0f);
+                    glScalef(dim.radioBarraSecundaria1, dim.longitudBrazo1, dim.radioBarraSecundaria1);
+                    cilindro->visualizar();
+                glPopMatrix();
+            }
+            glPushMatrix();
+                glTranslatef(0.0f, dim.radioRefuerzoHorizontal * 1.5f, 0.0f);
+                glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+                glScalef(dim.separacionBarras, dim.radioRefuerzoHorizontal, dim.radioRefuerzoHorizontal);
+                cilindro->visualizar();
+            glPopMatrix();
+            glPushMatrix();
+                glTranslatef(0.0f, dim.longitudBrazo1 - dim.radioRefuerzoHorizontal * 1.5f, 0.0f);
+                glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+                glScalef(dim.separacionBarras, dim.radioRefuerzoHorizontal, dim.radioRefuerzoHorizontal);
+                cilindro->visualizar();
+            glPopMatrix();
             glPushMatrix();
                 glScalef(dim.radioBrazo1, 1.0f, dim.radioBrazo1);
                 disco->visualizar();
@@ -356,6 +428,25 @@ void igvModeloArticulado::visualizarConColoresSeleccion() {
             glRotatef(anguloBrazo2, 0.0f, 0.0f, 1.0f);
             glPushMatrix();
                 glScalef(dim.radioBrazo2, dim.longitudBrazo2, dim.radioBrazo2);
+                cilindro->visualizar();
+            glPopMatrix();
+            for (int i = -1; i <= 1; i += 2) {
+                glPushMatrix();
+                    glTranslatef(i * dim.separacionBarras * 0.5f, 0.0f, 0.0f);
+                    glScalef(dim.radioBarraSecundaria2, dim.longitudBrazo2, dim.radioBarraSecundaria2);
+                    cilindro->visualizar();
+                glPopMatrix();
+            }
+            glPushMatrix();
+                glTranslatef(0.0f, dim.radioRefuerzoHorizontal * 1.5f, 0.0f);
+                glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+                glScalef(dim.separacionBarras, dim.radioRefuerzoHorizontal, dim.radioRefuerzoHorizontal);
+                cilindro->visualizar();
+            glPopMatrix();
+            glPushMatrix();
+                glTranslatef(0.0f, dim.longitudBrazo2 - dim.radioRefuerzoHorizontal * 1.5f, 0.0f);
+                glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+                glScalef(dim.separacionBarras, dim.radioRefuerzoHorizontal, dim.radioRefuerzoHorizontal);
                 cilindro->visualizar();
             glPopMatrix();
             glPushMatrix();
