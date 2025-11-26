@@ -73,7 +73,7 @@ void igvInterfaz::mostrarAyudaInicial() const {
     printf("Modo seleccion: pulsa 1-4 o clic y mueve con flechas o arrastrando\n");
     printf("Camara: C activa control. Flechas orbitan/cabecean, y/Y gira eje propio\n");
     printf("Camara: f/F plano delantero, b/B plano trasero, +/- zoom, p/P proyeccion\n");
-    printf("Vistas: v/V cambia panoramica/planta/perfil/alzado. 4 activa viewports\n");
+    printf("Vistas: v/V cambia panoramica/planta/perfil/alzado. 4 viewports en modo camara\n");
     printf("Ejes: E. Iluminacion y normales: H. Animaciones: A modelo, G orbita camara\n");
     printf("Reset pose lampara: R. Salir: ESC. \n");
     printf("============================================================\n");
@@ -190,6 +190,19 @@ void igvInterfaz::keyboardFunc(unsigned char key, int x, int y) {
         case 'V':
             _instancia->camara.siguienteVista();
             break;
+        case '4':
+            if (_instancia->camara.getMovimientoActivo()) {
+                _instancia->cambiaModoMultiViewPort();
+                if (_instancia->getModoMultiViewport()) {
+                    printf("Viewports activados: panoramica, planta, perfil y alzado\n");
+                } else {
+                    printf("Viewports desactivados: vuelve a la vista principal\n");
+                }
+            } else if (!_instancia->modoTransformacionGlobal) {
+                _instancia->escena.setParteSeleccionada(3);
+                printf("Pantalla seleccionada - Izq/Der giran la pantalla, Arr/Ab inclinan\n");
+            }
+            break;
         // case '4':
         //     _instancia->cambiaModoMultiViewPort();
         //     break;
@@ -294,12 +307,6 @@ void igvInterfaz::keyboardFunc(unsigned char key, int x, int y) {
             if (!_instancia->modoTransformacionGlobal) {
                 _instancia->escena.setParteSeleccionada(2);
                 printf("Brazo 2 seleccionado - Izq/Der giran lateralmente, Arr/Ab inclinan\n");
-            }
-            break;
-        case '4':
-            if (!_instancia->modoTransformacionGlobal) {
-                _instancia->escena.setParteSeleccionada(3);
-                printf("Pantalla seleccionada - Izq/Der giran la pantalla, Arr/Ab inclinan\n");
             }
             break;
         case 27:
