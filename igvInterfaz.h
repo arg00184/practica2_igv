@@ -63,6 +63,8 @@ public:
 
     bool getModoSeleccion() const { return modoSeleccion; }
 
+    void mostrarAyudaInicial() const;
+
     void aplicarIncrementoSeleccionadoHorizontal(float incremento);
 
     void aplicarIncrementoSeleccionadoVertical(float incremento);

@@ -37,6 +37,8 @@ void igvInterfaz::configura_entorno(int argc, char **argv
 
     glEnable(GL_LIGHTING);
     glEnable(GL_NORMALIZE);
+
+    mostrarAyudaInicial();
 }
 
 
@@ -57,6 +59,20 @@ void igvInterfaz::cambiarModoInteraccion() {
         _instancia->escena.activarModoSeleccion(false);
         arrastrando = false;
     }
+}
+
+void igvInterfaz::mostrarAyudaInicial() const {
+    printf("====================== INSTRUCCIONES ======================\n");
+    printf("Movimiento de cámara: flechas (vista libre), +/- zoom, P perspectiva/ortográfica\n");
+    printf("Vista múltiple: tecla 4. Ejes: E. Encender movimiento continuo de cámara: C/F/B\n");
+    printf("Iluminación y normales: H alterna sombreado plano/suave y uso de normales\n");
+    printf("Animaciones: A anima la lámpara, G activa la órbita automática de la cámara\n");
+    printf("Interacción con la lámpara: M cambia entre modo teclado y modo selección\n");
+    printf("Seleccionar partes: teclas 1-4 o clic por color. Reset pose: R\n");
+    printf("Mover partes (modo selección): flechas o arrastrar con botón izquierdo\n");
+    printf("Brazo 2 y pantalla: Izq/Der giro lateral, Arr/Ab inclinación vertical\n");
+    printf("Salir: ESC. \n");
+    printf("============================================================\n");
 }
 
 void igvInterfaz::aplicarIncrementoSeleccionadoHorizontal(float incremento) {
