@@ -190,9 +190,9 @@ void igvInterfaz::keyboardFunc(unsigned char key, int x, int y) {
         case 'V':
             _instancia->camara.siguienteVista();
             break;
-        case '4':
-            _instancia->cambiaModoMultiViewPort();
-            break;
+        // case '4':
+        //     _instancia->cambiaModoMultiViewPort();
+        //     break;
         case 'h':
         case 'H':
             _instancia->escena.cambiarModoSombreado();
