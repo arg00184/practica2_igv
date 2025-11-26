@@ -33,19 +33,32 @@ private:
         // Brazo inferior (más grueso y corto)
         float longitudBrazo1;
         float radioBrazo1;
+        float radioBrazo1Prox;
+        float radioBrazo1Dist;
 
         // Articulaciones
         float radioArticulacion1;
         float radioArticulacion2;
 
+        // Refuerzos dobles de los brazos
+        float separacionBarras;
+        float radioBarraSecundaria1;
+        float radioBarraSecundaria2;
+        float radioRefuerzoHorizontal;
+
         // Brazo superior (más delgado y largo)
         float longitudBrazo2;
         float radioBrazo2;
+        float radioBrazo2Prox;
+        float radioBrazo2Dist;
 
         // Cabeza/pantalla cónica
         float radioBasePantalla;
         float radioTopePantalla;
         float alturaPantalla;
+        float grosorPantalla;
+        float radioBombilla;
+        float alturaBombilla;
 
         // Cuello de la pantalla
         float longitudCuello;
@@ -91,3 +104,4 @@ public:
 };
 
 #endif // __IGV_MODELO_ARTICULADO
+
