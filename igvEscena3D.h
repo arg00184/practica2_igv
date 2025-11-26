@@ -10,6 +10,7 @@
 #endif
 
 #include "igvModeloArticulado.h"
+#include "igvMallaTriangulos.h"
 
 class igvEscena3D {
 public:
@@ -46,6 +47,8 @@ public:
 private:
     bool ejes = true;
     igvModeloArticulado modelo;
+    igvMallaTriangulos malla;
+    bool mallaCargada = false;
     bool modoSeleccion = false;
     int parteSeleccionada = -1; // -1: ninguna, 0: base, 1: brazo1, 2: brazo2, 3: pantalla
 
