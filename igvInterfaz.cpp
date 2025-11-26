@@ -50,9 +50,53 @@ void igvInterfaz::cambiarModoInteraccion() {
     if (modoSeleccion) {
         printf("Modo selección activado: Usa las teclas 1-4 o haz clic para elegir parte\n");
         printf("Luego controla el movimiento con las flechas (izq/der/arriba/abajo)\n");
+        _instancia->escena.activarModoSeleccion(true);
+        arrastrando = false;
     } else {
         printf("Modo teclado activado: Las teclas afectan directamente a todas las partes\n");
         _instancia->escena.activarModoSeleccion(false);
+        arrastrando = false;
+    }
+}
+
+void igvInterfaz::aplicarIncrementoSeleccionado(float incremento) {
+    switch (escena.getParteSeleccionada()) {
+        case 0:
+            escena.rotarBaseLampara(incremento);
+            break;
+        case 1:
+            escena.rotarBrazo1Lampara(incremento);
+            break;
+        case 2:
+            escena.rotarBrazo2Lampara(incremento);
+            break;
+        case 3:
+            escena.rotarPantallaLampara(incremento);
+            break;
+        default:
+            break;
+    }
+}
+
+void igvInterfaz::aplicarMovimientoRaton(int dx, int dy) {
+    if (escena.getParteSeleccionada() == -1) return;
+
+    const float factor = 0.25f;
+    switch (escena.getParteSeleccionada()) {
+        case 0:
+            escena.rotarBaseLampara(dx * factor);
+            break;
+        case 1:
+            escena.rotarBrazo1Lampara(-dy * factor);
+            break;
+        case 2:
+            escena.rotarBrazo2Lampara(-dy * factor);
+            break;
+        case 3:
+            escena.rotarPantallaLampara(-dy * factor);
+            break;
+        default:
+            break;
     }
 }
 
@@ -204,23 +248,49 @@ void igvInterfaz::mouseFunc(int button, int state, int x, int y) {
         switch(parte) {
             case 0:
                 printf("Base seleccionada - Usa las flechas para rotar\n");
+                _instancia->arrastrando = true;
                 break;
             case 1:
                 printf("Brazo 1 seleccionado - Usa las flechas para rotar\n");
+                _instancia->arrastrando = true;
                 break;
             case 2:
                 printf("Brazo 2 seleccionado - Usa las flechas para rotar\n");
+                _instancia->arrastrando = true;
                 break;
             case 3:
                 printf("Pantalla seleccionada - Usa las flechas para rotar\n");
+                _instancia->arrastrando = true;
                 break;
             default:
                 printf("No se selecciono ninguna parte - Haz clic en la lámpara\n");
+                _instancia->arrastrando = false;
                 break;
         }
 
+        _instancia->ultimoX = x;
+        _instancia->ultimoY = y;
+
         glutPostRedisplay();
     }
+
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
+        _instancia->arrastrando = false;
+    }
+}
+
+void igvInterfaz::motionFunc(int x, int y) {
+    if (!_instancia->modoSeleccion || !_instancia->arrastrando) return;
+
+    int dx = x - _instancia->ultimoX;
+    int dy = y - _instancia->ultimoY;
+
+    _instancia->aplicarMovimientoRaton(dx, dy);
+
+    _instancia->ultimoX = x;
+    _instancia->ultimoY = y;
+
+    glutPostRedisplay();
 }
 
 void igvInterfaz::displayFunc() {
@@ -260,6 +330,7 @@ void igvInterfaz::inicializa_callbacks() {
     glutReshapeFunc(reshapeFunc);
     glutDisplayFunc(displayFunc);
     glutMouseFunc(mouseFunc);
+    glutMotionFunc(motionFunc);
     glutTimerFunc(16, timerFunc, 0);
 }
 

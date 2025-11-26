@@ -33,6 +33,8 @@ public:
 
     static void mouseFunc(int button, int state, int x, int y);
 
+    static void motionFunc(int x, int y);
+
     void configura_entorno(int argc, char **argv
                            , int _ancho_ventana, int _alto_ventana
                            , int _pos_X, int _pos_Y
@@ -63,6 +65,8 @@ public:
 
     void aplicarIncrementoSeleccionado(float incremento);
 
+    void aplicarMovimientoRaton(int dx, int dy);
+
 
 private:
     int ancho_ventana = 0;
@@ -74,6 +78,10 @@ private:
     bool modoSeleccion = false;
     igvEscena3D escena;
     static igvInterfaz *_instancia;
+
+    bool arrastrando = false;
+    int ultimoX = 0;
+    int ultimoY = 0;
 
     igvInterfaz();
 };
