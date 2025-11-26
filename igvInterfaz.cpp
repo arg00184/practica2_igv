@@ -135,8 +135,8 @@ void igvInterfaz::keyboardFunc(unsigned char key, int x, int y) {
         case '4':
             _instancia->cambiaModoMultiViewPort();
             break;
-        case 'g':
-        case 'G':
+        case 'h':
+        case 'H':
             _instancia->escena.cambiarModoSombreado();
             _instancia->escena.cambiarUsoNormales();
             break;
@@ -148,14 +148,22 @@ void igvInterfaz::keyboardFunc(unsigned char key, int x, int y) {
         case 'M':
             _instancia->cambiarModoInteraccion();
             break;
-        case 't':
-        case 'T':
-            _instancia->animacionActiva = !_instancia->animacionActiva;
-            if (_instancia->animacionActiva) {
-                printf("Animacion automática ACTIVADA\n");
-                glutTimerFunc(_instancia->timerAnimacion, timerFunc, 0);
+        case 'a':
+        case 'A':
+            _instancia->animacionModeloActiva = !_instancia->animacionModeloActiva;
+            if (_instancia->animacionModeloActiva) {
+                printf("Animacion automática del modelo ACTIVADA\n");
             } else {
-                printf("Animacion automática DESACTIVADA\n");
+                printf("Animacion automática del modelo DESACTIVADA\n");
+            }
+            break;
+        case 'g':
+        case 'G':
+            _instancia->orbitaAutomaticaActiva = !_instancia->orbitaAutomaticaActiva;
+            if (_instancia->orbitaAutomaticaActiva) {
+                printf("Orbitado automático de la cámara ACTIVADO\n");
+            } else {
+                printf("Orbitado automático de la cámara DESACTIVADO\n");
             }
             break;
         case '1':
@@ -304,14 +312,19 @@ void igvInterfaz::displayFunc() {
 }
 
 void igvInterfaz::timerFunc(int value) {
-    if (_instancia->animacionActiva) {
+    if (_instancia->animacionModeloActiva) {
         _instancia->escena.rotarBaseLampara(1.0f);
-
-        _instancia->camara.orbita(0.5);
-
-        glutPostRedisplay();
-        glutTimerFunc(_instancia->timerAnimacion, timerFunc, 0);
     }
+
+    if (_instancia->orbitaAutomaticaActiva) {
+        _instancia->camara.orbita(0.5);
+    }
+
+    if (_instancia->animacionModeloActiva || _instancia->orbitaAutomaticaActiva) {
+        glutPostRedisplay();
+    }
+
+    glutTimerFunc(_instancia->timerAnimacion, timerFunc, 0);
 }
 
 void igvInterfaz::inicializa_callbacks() {

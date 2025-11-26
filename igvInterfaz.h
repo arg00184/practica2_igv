@@ -73,7 +73,8 @@ private:
     int alto_ventana = 0;
     igvCamara camara;
     bool modoMultiViewport = false;
-    bool animacionActiva = false;
+    bool animacionModeloActiva = false;
+    bool orbitaAutomaticaActiva = false;
     int timerAnimacion = 16;
     bool modoSeleccion = false;
     igvEscena3D escena;
