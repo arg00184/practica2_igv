@@ -41,6 +41,13 @@ void igvEscena3D::visualizar() {
         pintar_ejes();
     }
 
+    glPushMatrix();
+    glTranslatef(traslacionX, traslacionY, traslacionZ);
+    glRotatef(rotacionX, 1.0f, 0.0f, 0.0f);
+    glRotatef(rotacionY, 0.0f, 1.0f, 0.0f);
+    glRotatef(rotacionZ, 0.0f, 0.0f, 1.0f);
+    glScalef(escala, escala, escala);
+
     if (mallaCargada) {
         GLfloat color_malla[] = {0.6f, 0.6f, 0.8f, 1.0f};
         glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color_malla);
@@ -52,6 +59,8 @@ void igvEscena3D::visualizar() {
     }
 
     modelo.visualizar();
+
+    glPopMatrix();
 
     glPopMatrix();
 }
@@ -112,6 +121,11 @@ void igvEscena3D::visualizarModoSeleccion() {
     glDisable(GL_DITHER);
 
     glPushMatrix();
+    glTranslatef(traslacionX, traslacionY, traslacionZ);
+    glRotatef(rotacionX, 1.0f, 0.0f, 0.0f);
+    glRotatef(rotacionY, 0.0f, 1.0f, 0.0f);
+    glRotatef(rotacionZ, 0.0f, 0.0f, 1.0f);
+    glScalef(escala, escala, escala);
     modelo.visualizarSeleccion();
     glPopMatrix();
 
@@ -141,4 +155,35 @@ void igvEscena3D::seleccionarParte(int x, int y, int alto_ventana) {
     unsigned char* pixel = capturarBufferSeleccion(x, alto_ventana - y);
     parteSeleccionada = identificarPartePorColor(pixel[0], pixel[1], pixel[2]);
     glClearColor(1.0, 1.0, 1.0, 0.0);
+}
+
+void igvEscena3D::trasladarX(float incremento) {
+    traslacionX += incremento;
+}
+
+void igvEscena3D::trasladarY(float incremento) {
+    traslacionY += incremento;
+}
+
+void igvEscena3D::trasladarZ(float incremento) {
+    traslacionZ += incremento;
+}
+
+void igvEscena3D::rotarEscenaX(float incremento) {
+    rotacionX += incremento;
+}
+
+void igvEscena3D::rotarEscenaY(float incremento) {
+    rotacionY += incremento;
+}
+
+void igvEscena3D::rotarEscenaZ(float incremento) {
+    rotacionZ += incremento;
+}
+
+void igvEscena3D::escalarEscena(float factor) {
+    escala += factor;
+    if (escala < 0.1f) {
+        escala = 0.1f;
+    }
 }
