@@ -82,13 +82,15 @@ void igvEscena3D::resetearPoseLampara() {
 }
 
 void igvEscena3D::visualizarModoSeleccion() {
+    glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     glDisable(GL_LIGHTING);
-    glDisable(GL_LIGHT0);
+    glDisable(GL_DITHER);
+
     glPushMatrix();
-    //modelo.visualizarConColoresSeleccion();
-    // glPopMatrix();
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
+    modelo.visualizarSeleccion();
+    glPopMatrix();
+
+    glPopAttrib();
 }
 
 unsigned char* igvEscena3D::capturarBufferSeleccion(int x, int y) {
