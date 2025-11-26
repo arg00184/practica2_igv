@@ -63,7 +63,9 @@ public:
 
     bool getModoSeleccion() const { return modoSeleccion; }
 
-    void aplicarIncrementoSeleccionado(float incremento);
+    void aplicarIncrementoSeleccionadoHorizontal(float incremento);
+
+    void aplicarIncrementoSeleccionadoVertical(float incremento);
 
     void aplicarMovimientoRaton(int dx, int dy);
 

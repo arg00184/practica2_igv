@@ -90,8 +90,16 @@ void igvEscena3D::rotarBrazo2Lampara(float incremento) {
     modelo.rotarBrazo2(incremento);
 }
 
+void igvEscena3D::rotarBrazo2LateralLampara(float incremento) {
+    modelo.rotarBrazo2Lateral(incremento);
+}
+
 void igvEscena3D::rotarPantallaLampara(float incremento) {
     modelo.rotarPantalla(incremento);
+}
+
+void igvEscena3D::rotarPantallaLateralLampara(float incremento) {
+    modelo.rotarPantallaLateral(incremento);
 }
 
 void igvEscena3D::resetearPoseLampara() {

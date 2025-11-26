@@ -17,7 +17,9 @@ private:
     float anguloBrazoIzquierdo; // Flexión del brazo izquierdo lateral
     float anguloBrazo1;         // Flexión del primer brazo principal
     float anguloBrazo2;         // Flexión del segundo brazo principal
+    float anguloBrazo2Yaw;      // Giro lateral del segundo brazo principal
     float anguloPantalla;       // Inclinación de la pantalla
+    float anguloPantallaYaw;    // Giro lateral de la pantalla
 
     // Modo de visualización
     bool sombreado_suave;
@@ -46,7 +48,9 @@ public:
     void rotarBrazoIzquierdo(float incremento);
     void rotarBrazo1(float incremento);
     void rotarBrazo2(float incremento);
+    void rotarBrazo2Lateral(float incremento);
     void rotarPantalla(float incremento);
+    void rotarPantallaLateral(float incremento);
 
     void resetearPose();
 

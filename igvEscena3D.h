@@ -34,7 +34,11 @@ public:
 
     void rotarBrazo2Lampara(float incremento);
 
+    void rotarBrazo2LateralLampara(float incremento);
+
     void rotarPantallaLampara(float incremento);
+
+    void rotarPantallaLateralLampara(float incremento);
 
     void resetearPoseLampara();
 

@@ -59,7 +59,26 @@ void igvInterfaz::cambiarModoInteraccion() {
     }
 }
 
-void igvInterfaz::aplicarIncrementoSeleccionado(float incremento) {
+void igvInterfaz::aplicarIncrementoSeleccionadoHorizontal(float incremento) {
+    switch (escena.getParteSeleccionada()) {
+        case 0:
+            escena.rotarBaseLampara(incremento);
+            break;
+        case 1:
+            escena.rotarBrazo1Lampara(incremento);
+            break;
+        case 2:
+            escena.rotarBrazo2LateralLampara(incremento);
+            break;
+        case 3:
+            escena.rotarPantallaLateralLampara(incremento);
+            break;
+        default:
+            break;
+    }
+}
+
+void igvInterfaz::aplicarIncrementoSeleccionadoVertical(float incremento) {
     switch (escena.getParteSeleccionada()) {
         case 0:
             escena.rotarBaseLampara(incremento);
@@ -90,9 +109,11 @@ void igvInterfaz::aplicarMovimientoRaton(int dx, int dy) {
             escena.rotarBrazo1Lampara(-dy * factor);
             break;
         case 2:
+            escena.rotarBrazo2LateralLampara(dx * factor);
             escena.rotarBrazo2Lampara(-dy * factor);
             break;
         case 3:
+            escena.rotarPantallaLateralLampara(dx * factor);
             escena.rotarPantallaLampara(-dy * factor);
             break;
         default:
@@ -176,11 +197,11 @@ void igvInterfaz::keyboardFunc(unsigned char key, int x, int y) {
             break;
         case '3':
             _instancia->escena.setParteSeleccionada(2);
-            printf("Brazo 2 seleccionado - Usa las flechas para rotar\n");
+            printf("Brazo 2 seleccionado - Izq/Der giran lateralmente, Arr/Ab inclinan\n");
             break;
         case '4':
             _instancia->escena.setParteSeleccionada(3);
-            printf("Pantalla seleccionada - Usa las flechas para rotar\n");
+            printf("Pantalla seleccionada - Izq/Der giran la pantalla, Arr/Ab inclinan\n");
             break;
         case 27:
             exit(1);
@@ -194,28 +215,28 @@ void igvInterfaz::specialFunc(int key, int x, int y) {
             if (_instancia->escena.getParteSeleccionada() == -1) {
                 _instancia->camara.orbita(-5.0);
             } else {
-                _instancia->aplicarIncrementoSeleccionado(-5.0f);
+                _instancia->aplicarIncrementoSeleccionadoHorizontal(-5.0f);
             }
             break;
         case GLUT_KEY_RIGHT:
             if (_instancia->escena.getParteSeleccionada() == -1) {
                 _instancia->camara.orbita(5.0);
             } else {
-                _instancia->aplicarIncrementoSeleccionado(5.0f);
+                _instancia->aplicarIncrementoSeleccionadoHorizontal(5.0f);
             }
             break;
         case GLUT_KEY_UP:
             if (_instancia->escena.getParteSeleccionada() == -1) {
                 _instancia->camara.cabeceo(5.0);
             } else {
-                _instancia->aplicarIncrementoSeleccionado(5.0f);
+                _instancia->aplicarIncrementoSeleccionadoVertical(5.0f);
             }
             break;
         case GLUT_KEY_DOWN:
             if (_instancia->escena.getParteSeleccionada() == -1) {
                 _instancia->camara.cabeceo(-5.0);
             } else {
-                _instancia->aplicarIncrementoSeleccionado(-5.0f);
+                _instancia->aplicarIncrementoSeleccionadoVertical(-5.0f);
             }
             break;
     }
@@ -253,11 +274,11 @@ void igvInterfaz::mouseFunc(int button, int state, int x, int y) {
                 _instancia->arrastrando = true;
                 break;
             case 2:
-                printf("Brazo 2 seleccionado - Arrastra o usa las flechas para rotar\n");
+                printf("Brazo 2 seleccionado - Arrastra para girar/inclinar o usa las flechas\n");
                 _instancia->arrastrando = true;
                 break;
             case 3:
-                printf("Pantalla seleccionada - Arrastra o usa las flechas para rotar\n");
+                printf("Pantalla seleccionada - Arrastra para girar/inclinar o usa las flechas\n");
                 _instancia->arrastrando = true;
                 break;
             default:

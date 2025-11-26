@@ -11,7 +11,9 @@ igvModeloArticulado::igvModeloArticulado() {
     anguloBrazoIzquierdo = 30.0f;
     anguloBrazo1 = 45.0f;
     anguloBrazo2 = -30.0f;
+    anguloBrazo2Yaw = 0.0f;
     anguloPantalla = -45.0f;
+    anguloPantallaYaw = 0.0f;
     sombreado_suave = true;
     usar_normales = true;
 }
@@ -233,6 +235,7 @@ void igvModeloArticulado::visualizar() {
     dibujarArticulacion();
 
     // NIVEL 3: Segundo brazo principal (más largo)
+    glRotatef(anguloBrazo2Yaw, 0, 1, 0);
     glRotatef(anguloBrazo2, 1, 0, 0);
 
     // Brazos laterales unidos al brazo superior (más largos)
@@ -260,6 +263,7 @@ void igvModeloArticulado::visualizar() {
     dibujarArticulacion();
 
     // NIVEL 4: Pantalla
+    glRotatef(anguloPantallaYaw, 0, 1, 0);
     glRotatef(anguloPantalla, 1, 0, 0);
     dibujarPantalla();
 
@@ -296,6 +300,7 @@ void igvModeloArticulado::visualizarSeleccion() {
     dibujarArticulacion();
 
     // NIVEL 3: Segundo brazo principal (incluye brazos laterales)
+    glRotatef(anguloBrazo2Yaw, 0, 1, 0);
     glRotatef(anguloBrazo2, 1, 0, 0);
 
     glPushMatrix();
@@ -321,6 +326,7 @@ void igvModeloArticulado::visualizarSeleccion() {
     dibujarArticulacion();
 
     // NIVEL 4: Pantalla
+    glRotatef(anguloPantallaYaw, 0, 1, 0);
     glRotatef(anguloPantalla, 1, 0, 0);
     glColor3ub(255, 255, 0); // Pantalla en amarillo
     dibujarPantalla();
@@ -373,11 +379,27 @@ void igvModeloArticulado::rotarBrazo2(float incremento) {
 }
 
 /**
+ * Giro lateral del segundo brazo principal
+ */
+void igvModeloArticulado::rotarBrazo2Lateral(float incremento) {
+    anguloBrazo2Yaw += incremento;
+    anguloBrazo2Yaw = std::max(-70.0f, std::min(70.0f, anguloBrazo2Yaw));
+}
+
+/**
  * Rota la pantalla con límites realistas
  */
 void igvModeloArticulado::rotarPantalla(float incremento) {
     anguloPantalla += incremento;
     anguloPantalla = std::max(-90.0f, std::min(45.0f, anguloPantalla));
+}
+
+/**
+ * Giro lateral de la pantalla con límites realistas
+ */
+void igvModeloArticulado::rotarPantallaLateral(float incremento) {
+    anguloPantallaYaw += incremento;
+    anguloPantallaYaw = std::max(-90.0f, std::min(90.0f, anguloPantallaYaw));
 }
 
 /**
@@ -389,7 +411,9 @@ void igvModeloArticulado::resetearPose() {
     anguloBrazoIzquierdo = 30.0f;
     anguloBrazo1 = 45.0f;
     anguloBrazo2 = -30.0f;
+    anguloBrazo2Yaw = 0.0f;
     anguloPantalla = -45.0f;
+    anguloPantallaYaw = 0.0f;
 }
 
 /**
