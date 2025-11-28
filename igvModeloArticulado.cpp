@@ -1,4 +1,6 @@
 #include "igvModeloArticulado.h"
+#include "igvCilindro.h"
+#include "igvDisco.h"
 #include <algorithm>
 
 /**
@@ -21,8 +23,7 @@ igvModeloArticulado::igvModeloArticulado() {
 /**
  * Destructor
  */
-igvModeloArticulado::~igvModeloArticulado() {
-}
+igvModeloArticulado::~igvModeloArticulado() {}
 
 /**
  * Dibuja la base de la lámpara con más detalle
@@ -31,30 +32,40 @@ void igvModeloArticulado::dibujarBase() {
     GLfloat color_base[] = {0.15f, 0.15f, 0.15f, 1.0f};
     GLfloat color_plataforma[] = {0.25f, 0.25f, 0.25f, 1.0f};
 
-    GLUquadric* quad = gluNewQuadric();
-    gluQuadricNormals(quad, GLU_SMOOTH);
+    static igvCilindro cilindroUnidad(1.0f, 1.0f, 30, 1);
+    static igvDisco discoUnidad(1.0f, 30);
 
     // Base principal (disco grande y bajo)
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color_base);
     glPushMatrix();
-    glRotatef(-90, 1, 0, 0);
-    gluCylinder(quad, 0.5, 0.5, 0.05, 30, 1);
-    gluDisk(quad, 0, 0.5, 30, 1);
-    glTranslatef(0, 0, 0.05);
-    gluDisk(quad, 0, 0.5, 30, 1);
+    glScalef(0.5f, 0.05f, 0.5f);
+    cilindroUnidad.visualizar();
+    glPopMatrix();
+
+    glPushMatrix();
+    glScalef(0.5f, 0.5f, 0.5f);
+    discoUnidad.visualizar();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0, 0.05f, 0);
+    glScalef(0.5f, 0.5f, 0.5f);
+    discoUnidad.visualizar();
     glPopMatrix();
 
     // Plataforma central elevada (donde van los brazos)
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color_plataforma);
     glPushMatrix();
-    glTranslatef(0, 0.05, 0);
-    glRotatef(-90, 1, 0, 0);
-    gluCylinder(quad, 0.15, 0.12, 0.1, 20, 1);
-    glTranslatef(0, 0, 0.1);
-    gluDisk(quad, 0, 0.12, 20, 1);
+    glTranslatef(0, 0.05f, 0);
+    glScalef(0.15f, 0.1f, 0.15f);
+    cilindroUnidad.visualizar();
     glPopMatrix();
 
-    gluDeleteQuadric(quad);
+    glPushMatrix();
+    glTranslatef(0, 0.15f, 0);
+    glScalef(0.12f, 0.12f, 0.12f);
+    discoUnidad.visualizar();
+    glPopMatrix();
 }
 
 /**
@@ -91,16 +102,16 @@ void igvModeloArticulado::dibujarBrazoLateral(float longitud, float radio) {
     // Anillo decorativo en el medio
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color_detalle);
     glPushMatrix();
-    glTranslatef(0, longitud * 0.5, 0);
+    glTranslatef(0, longitud * 0.5f, 0);
     glRotatef(-90, 1, 0, 0);
-    gluCylinder(quad, radio * 1.15, radio * 1.15, 0.02, 16, 1);
+    gluCylinder(quad, radio * 1.15f, radio * 1.15f, 0.02f, 16, 1);
     glPopMatrix();
 
     // Esfera al final del brazo
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color_brazo_lateral);
     glPushMatrix();
     glTranslatef(0, longitud, 0);
-    gluSphere(quad, radio * 0.9, 12, 12);
+    gluSphere(quad, radio * 0.9f, 12, 12);
     glPopMatrix();
 
     gluDeleteQuadric(quad);
@@ -128,23 +139,23 @@ void igvModeloArticulado::dibujarBrazoPrincipal(float longitud, float radio) {
 
     // Anillo inferior
     glPushMatrix();
-    glTranslatef(0, longitud * 0.15, 0);
+    glTranslatef(0, longitud * 0.15f, 0);
     glRotatef(-90, 1, 0, 0);
-    gluCylinder(quad, radio * 1.12, radio * 1.12, 0.025, 24, 1);
+    gluCylinder(quad, radio * 1.12f, radio * 1.12f, 0.025f, 24, 1);
     glPopMatrix();
 
     // Anillo medio
     glPushMatrix();
-    glTranslatef(0, longitud * 0.5, 0);
+    glTranslatef(0, longitud * 0.5f, 0);
     glRotatef(-90, 1, 0, 0);
-    gluCylinder(quad, radio * 1.05, radio * 1.05, 0.025, 24, 1);
+    gluCylinder(quad, radio * 1.05f, radio * 1.05f, 0.025f, 24, 1);
     glPopMatrix();
 
     // Anillo superior
     glPushMatrix();
-    glTranslatef(0, longitud * 0.85, 0);
+    glTranslatef(0, longitud * 0.85f, 0);
     glRotatef(-90, 1, 0, 0);
-    gluCylinder(quad, radio * 0.9, radio * 0.9, 0.025, 24, 1);
+    gluCylinder(quad, radio * 0.9f, radio * 0.9f, 0.025f, 24, 1);
     glPopMatrix();
 
     gluDeleteQuadric(quad);
@@ -162,6 +173,7 @@ void igvModeloArticulado::dibujarPantalla() {
     gluQuadricNormals(quad, GLU_SMOOTH);
 
     glPushMatrix();
+
     // Eje del cono alineado con el brazo
     glRotatef(-90, 1, 0, 0);
 
