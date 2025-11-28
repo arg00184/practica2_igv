@@ -1,4 +1,6 @@
 #include "igvModeloArticulado.h"
+#include "igvCilindro.h"
+#include "igvDisco.h"
 #include <algorithm>
 
 /**
@@ -27,18 +29,7 @@ igvModeloArticulado::igvModeloArticulado() {
 /**
  * Destructor
  */
-igvModeloArticulado::~igvModeloArticulado() {
-    delete cilindroUnidad;
-    delete discoUnidad;
-    delete esferaUnidad;
-}
-
-void igvModeloArticulado::crearPrimitivas() {
-    // Primitivas base con dimensión unitaria para poder escalarlas libremente
-    cilindroUnidad = new igvCilindro(1.0f, 1.0f, 30, 1);
-    discoUnidad = new igvDisco(1.0f, 30);
-    esferaUnidad = new igvEsfera(1.0f, 15, 15);
-}
+igvModeloArticulado::~igvModeloArticulado() {}
 
 /**
  * Dibuja la base de la lámpara con más detalle
@@ -47,22 +38,25 @@ void igvModeloArticulado::dibujarBase() {
     GLfloat color_base[] = {0.15f, 0.15f, 0.15f, 1.0f};
     GLfloat color_plataforma[] = {0.25f, 0.25f, 0.25f, 1.0f};
 
+    static igvCilindro cilindroUnidad(1.0f, 1.0f, 30, 1);
+    static igvDisco discoUnidad(1.0f, 30);
+
     // Base principal (disco grande y bajo)
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color_base);
     glPushMatrix();
     glScalef(0.5f, 0.05f, 0.5f);
-    cilindroUnidad->visualizar();
+    cilindroUnidad.visualizar();
     glPopMatrix();
 
     glPushMatrix();
     glScalef(0.5f, 0.5f, 0.5f);
-    discoUnidad->visualizar();
+    discoUnidad.visualizar();
     glPopMatrix();
 
     glPushMatrix();
     glTranslatef(0, 0.05f, 0);
     glScalef(0.5f, 0.5f, 0.5f);
-    discoUnidad->visualizar();
+    discoUnidad.visualizar();
     glPopMatrix();
 
     // Plataforma central elevada (donde van los brazos)
@@ -70,13 +64,13 @@ void igvModeloArticulado::dibujarBase() {
     glPushMatrix();
     glTranslatef(0, 0.05f, 0);
     glScalef(0.15f, 0.1f, 0.15f);
-    cilindroUnidad->visualizar();
+    cilindroUnidad.visualizar();
     glPopMatrix();
 
     glPushMatrix();
     glTranslatef(0, 0.15f, 0);
     glScalef(0.12f, 0.12f, 0.12f);
-    discoUnidad->visualizar();
+    discoUnidad.visualizar();
     glPopMatrix();
 }
 
@@ -118,16 +112,15 @@ void igvModeloArticulado::dibujarBrazoLateral(float longitud, float radio) {
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color_detalle);
     glPushMatrix();
     glTranslatef(0, longitud * 0.5f, 0);
-    glScalef(radio * 1.15f, 0.02f, radio * 1.15f);
-    cilindroUnidad->visualizar();
+    glRotatef(-90, 1, 0, 0);
+    gluCylinder(quad, radio * 1.15f, radio * 1.15f, 0.02f, 16, 1);
     glPopMatrix();
 
     // Esfera al final del brazo
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color_brazo_lateral);
     glPushMatrix();
     glTranslatef(0, longitud, 0);
-    glScalef(radio * 0.9f, radio * 0.9f, radio * 0.9f);
-    esferaUnidad->visualizar();
+    gluSphere(quad, radio * 0.9f, 12, 12);
     glPopMatrix();
 }
 
@@ -157,22 +150,22 @@ void igvModeloArticulado::dibujarBrazoPrincipal(float longitud, float radio) {
     // Anillo inferior
     glPushMatrix();
     glTranslatef(0, longitud * 0.15f, 0);
-    glScalef(radio * 1.12f, 0.025f, radio * 1.12f);
-    cilindroUnidad->visualizar();
+    glRotatef(-90, 1, 0, 0);
+    gluCylinder(quad, radio * 1.12f, radio * 1.12f, 0.025f, 24, 1);
     glPopMatrix();
 
     // Anillo medio
     glPushMatrix();
     glTranslatef(0, longitud * 0.5f, 0);
-    glScalef(radio * 1.05f, 0.025f, radio * 1.05f);
-    cilindroUnidad->visualizar();
+    glRotatef(-90, 1, 0, 0);
+    gluCylinder(quad, radio * 1.05f, radio * 1.05f, 0.025f, 24, 1);
     glPopMatrix();
 
     // Anillo superior
     glPushMatrix();
     glTranslatef(0, longitud * 0.85f, 0);
-    glScalef(radio * 0.9f, 0.025f, radio * 0.9f);
-    cilindroUnidad->visualizar();
+    glRotatef(-90, 1, 0, 0);
+    gluCylinder(quad, radio * 0.9f, radio * 0.9f, 0.025f, 24, 1);
     glPopMatrix();
 }
 
@@ -185,6 +178,9 @@ void igvModeloArticulado::dibujarPantalla() {
     GLfloat color_bombilla[] = {1.0f, 0.95f, 0.7f, 1.0f};
 
     glPushMatrix();
+
+    // Eje del cono alineado con el brazo
+    glRotatef(-90, 1, 0, 0);
 
     // Cuerpo exterior escalonado para simular el cono truncado
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color_pantalla);
