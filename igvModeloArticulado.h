@@ -9,6 +9,10 @@
 #include <GL/glut.h>
 #endif
 
+#include "igvCilindro.h"
+#include "igvDisco.h"
+#include "igvEsfera.h"
+
 class igvModeloArticulado {
 private:
     // Ángulos de las articulaciones (grados de libertad)
@@ -25,7 +29,13 @@ private:
     bool sombreado_suave;
     bool usar_normales;
 
+    // Primitivas personalizadas reutilizables
+    igvCilindro *cilindroUnidad;
+    igvDisco *discoUnidad;
+    igvEsfera *esferaUnidad;
+
     // Métodos privados para dibujar cada parte
+    void crearPrimitivas();
     void dibujarBase();
     void dibujarArticulacion();
     void dibujarBrazoLateral(float longitud, float radio);
